@@ -108,6 +108,7 @@ public class CharacterController2D : MonoBehaviour
 					OnCrouchEvent.Invoke(false);
 				}
 			}
+			OnCrouchEvent.Invoke(m_wasCrouching); // Added wasCrouching to in it and put it to the end to fix the bug
 
 			// Move the character by finding the target velocity
 			Vector3 targetVelocity = new Vector2(move, m_Rigidbody2D.velocity.y);
