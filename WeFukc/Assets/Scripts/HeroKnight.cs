@@ -27,7 +27,7 @@ public class HeroKnight : MonoBehaviour {
     private float               m_timeSinceAttack = 0.0f;
     private float               m_delayToIdle = 0.0f;
     private float               m_rollDuration = 8.0f / 14.0f;
-    private float               m_rollCurrentTime;
+    private float               m_rollCurrentTime; 
 
 
     // Use this for initialization
@@ -64,7 +64,7 @@ public class HeroKnight : MonoBehaviour {
         {
             heroCollider.enabled = true;
         }
-        
+
         // Increase timer that controls attack combo
         m_timeSinceAttack += Time.deltaTime;
 
@@ -92,7 +92,7 @@ public class HeroKnight : MonoBehaviour {
 
         // -- Handle input and movement --
         float inputX = Input.GetAxis("Horizontal");
-
+        
         // Swap direction of sprite depending on walk direction
         if (inputX > 0)
         {

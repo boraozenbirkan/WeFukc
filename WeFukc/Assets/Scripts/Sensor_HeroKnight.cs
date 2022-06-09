@@ -7,10 +7,6 @@ public class Sensor_HeroKnight : MonoBehaviour {
 
     private float m_DisableTimer;
 
-    private void OnEnable()
-    {
-        m_ColCount = 0;
-    }
 
     public bool State()
     {
@@ -32,6 +28,11 @@ public class Sensor_HeroKnight : MonoBehaviour {
     void Update()
     {
         m_DisableTimer -= Time.deltaTime;
+    }
+
+    private void OnEnable()
+    {
+        m_ColCount = 0;
     }
 
     public void Disable(float duration)
