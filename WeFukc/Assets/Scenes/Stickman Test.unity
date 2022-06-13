@@ -605,7 +605,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 3
+  m_GravityScale: 5
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -624,17 +624,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 15
-  jumpForce: 20
-  sideJumpForceUp: 20
-  sideJumpForceSide: 25
+  jumpForce: 30
   groundSensor: {fileID: 492292926}
-  leftSensor1: {fileID: 149500726}
-  leftSensor2: {fileID: 103306544}
-  rightSensor1: {fileID: 1149016233}
-  rightSensor2: {fileID: 162782492}
   grounded: 0
-  onWall: 0
-  wasOnWall: 0
 --- !u!1 &492292923
 GameObject:
   m_ObjectHideFlags: 0
