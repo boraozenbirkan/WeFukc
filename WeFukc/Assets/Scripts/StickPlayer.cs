@@ -19,6 +19,7 @@ public class StickPlayer : MonoBehaviour
     public bool grounded = false;
     bool facingRight = true;
     float inputX = 0;
+    float movement = 0;
 
 
 
@@ -56,9 +57,10 @@ public class StickPlayer : MonoBehaviour
     {
         // Get the input
         inputX = Input.GetAxis("Horizontal");
+        movement = inputX * movementSpeed;
 
         // Move left and right, but if I was not on wall, make it faster to jump the other wall
-        rigidbody.velocity = new Vector2(inputX * movementSpeed, rigidbody.velocity.y);
+        rigidbody.velocity = new Vector2(movement, rigidbody.velocity.y);
 
         // Change the facing direction according to input
         if (inputX > 0 && !facingRight) Flip();           // flip if I move right but not facing right
@@ -72,6 +74,19 @@ public class StickPlayer : MonoBehaviour
             groundSensor.Disable(0.2f);
             Debug.Log("Normal Jump"); // Animate same as falling
         }
+
+        // Animations
+        // Move
+        animator.SetFloat("Speed", Mathf.Abs(movement));
+        // Set animator speed to have correlated animation with the speed.
+        if (Mathf.Abs(movement) > 0.01)
+        {
+            animator.speed = Mathf.Abs(movement) / movementSpeed;
+        }
+        else animator.speed = 1;
+
+        // Jump
+        animator.SetBool("OnAir", !grounded);
     }
 
     void Flip()
