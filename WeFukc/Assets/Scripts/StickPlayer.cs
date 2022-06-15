@@ -3,27 +3,22 @@ using UnityEngine;
 public class StickPlayer : MonoBehaviour
 {
     [Header("Configs")]
-    [SerializeField] float movementSpeed = 20f;
-    [SerializeField] float jumpForce = 20f;
+    [SerializeField] private float movementSpeed = 20f;
+    [SerializeField] private float jumpForce = 20f;
 
     [Header("Components")]
-    [SerializeField] StickSensor groundSensor;
+    [SerializeField] private StickSensor groundSensor;
+
+    private Animator animator;
+    private Rigidbody2D rigidbody;
+
+    private bool grounded = false;
+    private bool facingRight = true;
+    private float inputX = 0;
+    private float movement = 0;
 
 
-
-
-    Animator animator;
-    Rigidbody2D rigidbody;
-
-
-    public bool grounded = false;
-    bool facingRight = true;
-    float inputX = 0;
-    float movement = 0;
-
-
-
-    void Start()
+    private void Start()
     {
         animator = GetComponent<Animator>();
         rigidbody = GetComponent<Rigidbody2D>();
@@ -31,14 +26,23 @@ public class StickPlayer : MonoBehaviour
 
 
 
-    void Update()
+    private void Update()
     {
         GroundStatusCheck();
         MoveAndJump();
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (Mathf.Abs(inputX) > 0) animator.SetTrigger("RunningPunch");
+            else animator.SetTrigger("Punch");
+        }
     }
 
     private void GroundStatusCheck()
     {
+        // Don't check the ground if the player is going up
+        if (rigidbody.velocity.y > 0f) { return; }
+
         //I was on air but now I landed
         if (!grounded && groundSensor.State())
         {
@@ -89,7 +93,7 @@ public class StickPlayer : MonoBehaviour
         animator.SetBool("OnAir", !grounded);
     }
 
-    void Flip()
+    private void Flip()
     {
         // Switch the way the player is labelled as facing.
         facingRight = !facingRight;
@@ -98,5 +102,10 @@ public class StickPlayer : MonoBehaviour
         Vector3 theScale = transform.localScale;
         theScale.x *= -1;
         transform.localScale = theScale;
+    }
+
+    private void PunchHit()
+    {
+        Debug.Log("Punched!");
     }
 }
