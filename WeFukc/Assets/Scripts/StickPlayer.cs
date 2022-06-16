@@ -7,8 +7,6 @@ public class StickPlayer : MonoBehaviour
     [SerializeField] private float jumpForce = 20f;
     [SerializeField] private float flyingKickForce = 5f;
     [SerializeField] private float flyingKickUp = 5f;
-    [SerializeField] private float flyingKickGravityScale = 5f;
-    [SerializeField] private float TurningKickGravityScale = 1f;
 
     [Header("Components")]
     [SerializeField] private StickSensor groundSensor;
@@ -69,13 +67,11 @@ public class StickPlayer : MonoBehaviour
             if (!grounded && groundSensor.State())
             {
                 grounded = true;
-                Debug.Log("Landed !!"); // Animate
             }
             //I was on land but now I am not
             else if (grounded && !groundSensor.State())
             {
                 grounded = false;
-                Debug.Log("On air");
             }
         }
 
@@ -91,7 +87,7 @@ public class StickPlayer : MonoBehaviour
         }
 
         ///// Fight /////
-
+        if (!grounded) return;  // On air, not get fighting input
         // Punching //
         if (Input.GetKeyDown("j"))
         {
@@ -101,11 +97,11 @@ public class StickPlayer : MonoBehaviour
                 isPunching = true;
             }
         } // Kicking //
-        else if (Input.GetKeyDown("l"))
+        else if (Input.GetKeyDown("l")) 
         {
-            if (Mathf.Abs(inputX) > 0 && grounded) isFlyKicking = true; // Movenign and on the ground
-            else if (grounded) isKicking = true;    // Not moving but on the ground
-            else isTurningKicking = true;           // None of them = On air
+            if (Input.GetKey("w") && Mathf.Abs(rigidbody.velocity.x) < 2) isTurningKicking = true; //isTurningKicking = true;                 // if w key also pressed, turning kick
+            else if (Mathf.Abs(inputX) > 0 && grounded) isFlyKicking = true;    // if player is moving, they fly kick
+            else isKicking = true;           // None of them = Normal kick
         } // Defense //
         else if (Input.GetKeyDown("k")) isDefending = true;
 
@@ -178,7 +174,6 @@ public class StickPlayer : MonoBehaviour
             // Adjusting fly settings. With gravity change, we have more natural fly
             if (inputX > 0) rigidbody.velocity = new Vector2(flyingKickForce, flyingKickUp);
             else rigidbody.velocity = new Vector2(-flyingKickForce, flyingKickUp);
-            rigidbody.gravityScale = flyingKickGravityScale;
 
             isFlyKicking = false;
             canAnimate = false;
@@ -193,8 +188,7 @@ public class StickPlayer : MonoBehaviour
         {
             animator.SetTrigger("TurningKick");
 
-            rigidbody.velocity = new Vector2(0, rigidbody.velocity.y/3);
-            rigidbody.gravityScale = TurningKickGravityScale;
+            rigidbody.velocity = new Vector2(rigidbody.velocity.x, flyingKickUp);
 
             isTurningKicking = false;
             canAnimate = false;
@@ -204,19 +198,9 @@ public class StickPlayer : MonoBehaviour
 
     }
 
-    private void Flip()
-    {
-        // Switch the way the player is labelled as facing.
-        facingRight = !facingRight;
-
-        // Multiply the player's x local scale by -1.
-        Vector3 theScale = transform.localScale;
-        theScale.x *= -1;
-        transform.localScale = theScale;
-    }
-
-
-
+    ///  ************************   ///
+    ///        Giving Damage        ///
+    ///  ************************   ///
     private void PunchHit()
     {
         Debug.Log("Punched!");

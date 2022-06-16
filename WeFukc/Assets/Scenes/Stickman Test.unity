@@ -312,7 +312,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 230812618}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 28.71, y: 16.91, z: 0}
+  m_LocalPosition: {x: 53.51, y: 8.34, z: 0}
   m_LocalScale: {x: 2.2625, y: 43.44662, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -442,6 +442,7 @@ MonoBehaviour:
   flyingKickForce: 15
   flyingKickUp: 15
   flyingKickGravityScale: 5
+  TurningKickGravityScale: 1
   groundSensor: {fileID: 492292926}
   canAnimate: 1
 --- !u!1 &492292923
@@ -1312,7 +1313,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1642393683}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 17.16, y: 12.72, z: 0}
+  m_LocalPosition: {x: 41.96, y: 4.1500006, z: 0}
   m_LocalScale: {x: 2.2625, y: 33.162155, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
