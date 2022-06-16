@@ -10,16 +10,17 @@ public class StickPlayer : MonoBehaviour
 
     [Header("Components")]
     [SerializeField] private StickSensor groundSensor;
+    [SerializeField] private GameObject DeadBody;
+    [SerializeField] private GameObject DeadBody_Head;
+    [SerializeField] private GameObject DeadBody_Leg;
 
     private Animator animator;
     private Rigidbody2D rigidbody;
 
     private bool grounded = false;
-    private bool facingRight = true;
     public bool canAnimate = true;
     private float inputX = 0;
     private float movement = 0;
-    private float defaultGravityScale = 0;
 
     private bool isPunching = false;
     private bool isRunPunching = false;
@@ -34,7 +35,6 @@ public class StickPlayer : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rigidbody = GetComponent<Rigidbody2D>();
-        defaultGravityScale = rigidbody.gravityScale;
     }
 
 
@@ -44,7 +44,19 @@ public class StickPlayer : MonoBehaviour
         ///  ************************   ///
         ///        Status Check         ///
         ///  ************************   ///
-        
+        ///  
+        /*
+        if (Input.GetKeyDown("4"))  // Down Damage
+        {
+            DeadBody.SetActive(true);
+            DeadBody_Leg.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1500, 0));
+            DeadBody_Head.GetComponent<Rigidbody2D>().AddForce(new Vector2(500, 0));
+        }
+        if (Input.GetKeyDown("6")) // HEad Damage
+        {
+            DeadBody.SetActive(true);
+            DeadBody_Head.GetComponent<Rigidbody2D>().AddForce(new Vector2(-500, 0));
+        }*/
         
         StatusCheck();
         Actions();
@@ -111,9 +123,6 @@ public class StickPlayer : MonoBehaviour
     private void Actions()
     {
         if (!canAnimate) return; // If we can't animate a new movement, then doesn't care about the input
-
-        rigidbody.gravityScale = defaultGravityScale;
-
 
         if (isDefending)
         {
