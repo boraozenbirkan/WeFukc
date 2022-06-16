@@ -439,8 +439,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSpeed: 15
   jumpForce: 30
+  flyingKickForce: 15
+  flyingKickUp: 15
+  flyingKickGravityScale: 5
   groundSensor: {fileID: 492292926}
-  grounded: 0
+  canAnimate: 1
 --- !u!1 &492292923
 GameObject:
   m_ObjectHideFlags: 0
