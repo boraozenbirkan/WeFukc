@@ -35,8 +35,8 @@ public class StickBot : MonoBehaviour
     [SerializeField] private float flyingKickHitRange = 5f;
     [SerializeField] private float turningKickHitRange = 5f;
     [SerializeField] private LayerMask enemyLayers;
-    [SerializeField] private float takenPunchMove = 1f;
-    [SerializeField] private float takenKickMove = 5f;
+    [SerializeField] private float takenPunchMove = 3f;
+    [SerializeField] private float takenKickMove = 6f;
 
     private Animator animator;
     private Rigidbody2D rigidbody;
@@ -51,6 +51,7 @@ public class StickBot : MonoBehaviour
     private bool canAnimate = true;
     private float inputX = 0f;
     private float movement = 0f;
+    private float facingRightInt = 1f;
 
     // Fighting vars
     private bool isPunching = false;
@@ -71,6 +72,7 @@ public class StickBot : MonoBehaviour
     private const string DEFENDING = "Defending";
     private const string DAMAGE_HEAD = "DamageHead";
     private const string DAMAGE_DOWN = "DamageDown";
+    private const string KICK_FALL = "KickFall";
 
     // Bot Debug Vars
     public bool botMove = false;
@@ -82,6 +84,9 @@ public class StickBot : MonoBehaviour
         rigidbody = GetComponent<Rigidbody2D>();
 
         health = maxHealth;
+        // Get the initial facing direction
+        if (transform.localScale.x > 0) facingRightInt = 1;
+        else facingRightInt = -1;
     }
 
 
@@ -170,12 +175,13 @@ public class StickBot : MonoBehaviour
 
         ///// FLIP /////
         // Change the facing direction according to input
-        if (rigidbody.velocity.x > 0) transform.localScale = new Vector2(1, 1);
-        else if (rigidbody.velocity.x < 0) transform.localScale = new Vector2(-1, 1);
+        //if (rigidbody.velocity.x > 0) FlipCharacter(true);
+        //else if (rigidbody.velocity.x < 0) FlipCharacter(false);
 
         ///// Move /////
         // Move left and right if we can animate new movement
-        //if (botMove) rigidbody.velocity = new Vector2(3, rigidbody.velocity.y);
+        if (botMove) rigidbody.velocity = new Vector2(3, rigidbody.velocity.y);
+        else rigidbody.velocity = new Vector2(0, 0);
 
         // Jump if you are on ground
         if (isJumping)
@@ -246,18 +252,35 @@ public class StickBot : MonoBehaviour
     }
 
     private void toggleCanAnimate() { canAnimate = !canAnimate; }
-
+    private void FlipCharacter(bool flipRight)
+    {
+        if (flipRight)
+        {
+            transform.localScale = new Vector2(1, 1);
+            facingRightInt = 1; // Indicate that we are facing right
+        }
+        else
+        {
+            transform.localScale = new Vector2(-1, 1);
+            facingRightInt = -1; // Indicate that we are NO facing right
+        }
+    }
     ///  ************************   ///
     ///        Giving Damage        ///
     ///  ************************   ///
+    
     private void PunchHit()
     {
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll
             (punchHitLocation.position, punchHitRange, enemyLayers);
 
-        foreach (Collider2D hit in hitEnemies)
+        bool damageFromRight;
+
+        foreach (Collider2D enemy in hitEnemies)
         {
-            hit.GetComponent<StickBot>().TakenDamage(PUNCH_HIT, punchHitPoint);
+            if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
+            else damageFromRight = false;
+            enemy.GetComponent<StickBot>().TakenDamage(PUNCH_HIT, punchHitPoint, damageFromRight);
         }
     }
     private void PunchRunHit()
@@ -265,9 +288,13 @@ public class StickBot : MonoBehaviour
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll
             (punchHitLocation.position, punchHitRange, enemyLayers);
 
-        foreach (Collider2D hit in hitEnemies)
+        bool damageFromRight;
+
+        foreach (Collider2D enemy in hitEnemies)
         {
-            hit.GetComponent<StickBot>().TakenDamage(PUNCH_RUN, punchRunHitPoint);
+            if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
+            else damageFromRight = false;
+            enemy.GetComponent<StickBot>().TakenDamage(PUNCH_RUN, punchRunHitPoint, damageFromRight);
         }
     }
     private void KickHit()
@@ -275,9 +302,13 @@ public class StickBot : MonoBehaviour
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll
             (kickHitLocation.position, kickHitRange, enemyLayers);
 
-        foreach (Collider2D hit in hitEnemies)
+        bool damageFromRight;
+
+        foreach (Collider2D enemy in hitEnemies)
         {
-            hit.GetComponent<StickBot>().TakenDamage(KICK, kickHitPoint);
+            if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
+            else damageFromRight = false;
+            enemy.GetComponent<StickBot>().TakenDamage(KICK, kickHitPoint, damageFromRight);
         }
     }
     private void FlyingKickHit()
@@ -285,9 +316,13 @@ public class StickBot : MonoBehaviour
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll
             (flyingKickHitLocation.position, flyingKickHitRange, enemyLayers);
 
-        foreach (Collider2D hit in hitEnemies)
+        bool damageFromRight;
+
+        foreach (Collider2D enemy in hitEnemies)
         {
-            hit.GetComponent<StickBot>().TakenDamage(FLYING_KICK, flyingKickHitPoint);
+            if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
+            else damageFromRight = false;
+            enemy.GetComponent<StickBot>().TakenDamage(FLYING_KICK, flyingKickHitPoint, damageFromRight);
         }
     }
     private void TurningKickHit()
@@ -295,20 +330,33 @@ public class StickBot : MonoBehaviour
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll
             (turningKickHitLocation.position, turningKickHitRange, enemyLayers);
 
-        foreach (Collider2D hit in hitEnemies)
+        bool damageFromRight;
+
+        foreach (Collider2D enemy in hitEnemies)
         {
-            hit.GetComponent<StickBot>().TakenDamage(TURNING_KICK, turningKickHitPoint);
+            if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
+            else damageFromRight = false;
+            enemy.GetComponent<StickBot>().TakenDamage(TURNING_KICK, turningKickHitPoint, damageFromRight);
         }
     }
-
+    private void KickFallBackUp()
+    {   // Push forward when its standing up again
+        rigidbody.velocity = new Vector2(takenPunchMove * facingRightInt, rigidbody.velocity.y);
+    }
+    private void StopCharacter()
+    {
+        rigidbody.velocity = Vector2.zero;
+    }
 
     ///  ************************   ///
     ///       Taking Damage         ///
     ///  ************************   ///
 
     // TakenDamage is a one-size-fits-all method
-    public void TakenDamage(string _takenDamageType, float _takenDamagePoint)
+    public void TakenDamage(string _takenDamageType, float _takenDamagePoint, bool _DamageDirection)
     {
+        if (!canAnimate) return; // If the char even can't move, don't take any damage
+
         health -= _takenDamagePoint;
         if (health <= 0)
         {
@@ -318,17 +366,22 @@ public class StickBot : MonoBehaviour
 
         // Stop further animations and let the damage animation plays
         canAnimate = false;
-        rigidbody.velocity = Vector3.zero; // And stop the character completely
+        rigidbody.velocity = Vector2.zero; // And stop the character completely
+
+        // Flip the character to the direction where the damage comes from
+        if (_DamageDirection && facingRightInt != 1) FlipCharacter(true);
+        if (!_DamageDirection && facingRightInt != -1) FlipCharacter(false);
 
         // Animate
         if (_takenDamageType == PUNCH_HIT || _takenDamageType == PUNCH_RUN) animator.SetTrigger(DAMAGE_HEAD);
+        else if (_takenDamageType == FLYING_KICK || _takenDamageType == TURNING_KICK) animator.SetTrigger(KICK_FALL);
         else animator.SetTrigger(DAMAGE_DOWN);
 
-        // Move according to hit type
+        // Move away according to hit type
         if (_takenDamageType == PUNCH_RUN)
-            rigidbody.velocity = new Vector2(takenPunchMove, rigidbody.velocity.y);
+            rigidbody.velocity = new Vector2(-takenPunchMove * facingRightInt, rigidbody.velocity.y);
         else if (_takenDamageType == FLYING_KICK || _takenDamageType == TURNING_KICK)
-            rigidbody.velocity = new Vector2(takenKickMove, rigidbody.velocity.y);
+            rigidbody.velocity = new Vector2(-takenKickMove * facingRightInt, rigidbody.velocity.y);
     }
 
     private void CheckDeath()
@@ -342,22 +395,17 @@ public class StickBot : MonoBehaviour
             bodyPart.SetActive(false);
         }
 
-        // This will add force reverse if it faces left
-        int xAxis = 1;
-        if (transform.localScale.x < 0) xAxis = -1;
-        Debug.Log("X: " + transform.localScale.x);
-
         // Death style
         if (deathType == PUNCH_HIT || deathType == PUNCH_RUN || deathType == TURNING_KICK)
         {   // Head DAmage
             deadBody.SetActive(true);
-            deadBody_Head.GetComponent<Rigidbody2D>().AddForce(new Vector2(-2000 * xAxis, 0));
+            deadBody_Head.GetComponent<Rigidbody2D>().AddForce(new Vector2(-2000 * facingRightInt, 0));
         }
         else // Down Damage
         {
             deadBody.SetActive(true);
-            deadBody_Leg.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1500 * xAxis, 0));
-            deadBody_Head.GetComponent<Rigidbody2D>().AddForce(new Vector2(500 * xAxis, 0));
+            deadBody_Leg.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1500 * facingRightInt, 0));
+            deadBody_Head.GetComponent<Rigidbody2D>().AddForce(new Vector2(500 * facingRightInt, 0));
         }
 
         // Now Trigger common death actions
