@@ -12,11 +12,13 @@ public class StickPlayer : MonoBehaviour
 
     [Header("Specs")]
     [SerializeField] private float maxHealth = 100f;
+    [SerializeField] private float maxStamina = 100f;
+    [SerializeField] private float staminaIncrement = 4f;
     [SerializeField] private float punchHitPoint = 5f;
-    [SerializeField] private float punchRunHitPoint = 5f;
+    [SerializeField] private float punchRunHitPoint = 10f;
     [SerializeField] private float kickHitPoint = 5f;
-    [SerializeField] private float flyingKickHitPoint = 5f;
-    [SerializeField] private float turningKickHitPoint = 5f;
+    [SerializeField] private float flyingKickHitPoint = 15f;
+    [SerializeField] private float turningKickHitPoint = 25f;
 
     [Header("Death Components")]
     [SerializeField] private BoxCollider2D characterCollider;
@@ -45,6 +47,9 @@ public class StickPlayer : MonoBehaviour
     private float health;
     private bool isDying = false;
     private string deathType;
+    public float stamina;
+    public float staminaJump = 3f;
+
 
     // Movement vars
     private bool grounded = false;
@@ -52,6 +57,7 @@ public class StickPlayer : MonoBehaviour
     private float inputX = 0f;
     private float movement = 0f;
     private float facingRightInt = 0f;
+    private float velocityABS = 0f;
 
     // Fighting vars
     private bool isPunching = false;
@@ -83,9 +89,11 @@ public class StickPlayer : MonoBehaviour
         rigidbody = GetComponent<Rigidbody2D>();
 
         health = maxHealth;
+        stamina = maxStamina;
+
         // Get the initial facing direction
-        if (transform.localScale.x > 0) facingRightInt = 1;
-        else facingRightInt = -1;
+        if (transform.localScale.x > 0f) facingRightInt = 1f;
+        else facingRightInt = -1f;
     }
 
 
@@ -100,7 +108,10 @@ public class StickPlayer : MonoBehaviour
         // Debug Fights
         //if (Input.GetMouseButtonDown(0)) { TakenDamage(PUNCH_RUN, 5); }
         //if (Input.GetMouseButtonDown(1)) { TakenDamage(FLYING_KICK, 5); }
-        
+
+        if (stamina < 100f) stamina += Time.deltaTime * staminaIncrement;  // Increase stamina 1 point every second
+        else stamina = 100f;                            // If it exceed 100, set it as 100
+
         StatusCheck();
         Actions();
     }
@@ -136,30 +147,27 @@ public class StickPlayer : MonoBehaviour
 
         if (!canAnimate) return;
 
-        if (Input.GetButtonDown("Jump") && grounded)
+        if (Input.GetButtonDown("Jump") && grounded && stamina > staminaJump)
         {
             isJumping = true;
         }
 
+        velocityABS = Mathf.Abs(rigidbody.velocity.x);
+
         ///// Fight /////
         if (!grounded) return;  // On air, not get fighting input
-        // Punching //
-        if (Input.GetKeyDown("j"))
-        {
-            if (Mathf.Abs(rigidbody.velocity.x) > 10) isRunPunching = true; // run punch after vel > 10
-            else
-            {
-                isPunching = true;
-            }
-        } // Kicking //
-        else if (Input.GetKeyDown("l")) 
-        {
-            if (Input.GetKey("w") && Mathf.Abs(rigidbody.velocity.x) < 2) isTurningKicking = true; //isTurningKicking = true;                 // if w key also pressed, turning kick
-            else if (Mathf.Abs(inputX) > 0 && grounded) isFlyKicking = true;    // if player is moving, they fly kick
-            else isKicking = true;           // None of them = Normal kick
-        } // Defense //
+        // Punching // 
+        if (Input.GetKeyDown("j") && velocityABS > 10f && stamina > punchRunHitPoint) isRunPunching = true;
+        else if (Input.GetKeyDown("j") && velocityABS < 1f && stamina > punchHitPoint) isPunching = true;
+        
+        // Kicking //
+        else if (Input.GetKeyDown("l") && grounded && Input.GetKey("w") && stamina > turningKickHitPoint) isTurningKicking = true;
+        else if (Input.GetKeyDown("l") && grounded && velocityABS > 2f && stamina > flyingKickHitPoint) isFlyKicking = true;
+        else if (Input.GetKeyDown("l") && grounded && velocityABS < 1f && stamina > kickHitPoint) isKicking = true;
+        
+        // Defense //
         else if (Input.GetKeyDown("k")) isDefending = true;
-
+        // If the key is released
         if (Input.GetKeyUp("k")) isDefending = false;
     }
 
@@ -169,17 +177,20 @@ public class StickPlayer : MonoBehaviour
 
         if (isDefending)
         {
-            animator.SetBool(DEFENDING, true);
-            rigidbody.velocity = new Vector2(0, 0);
+            animator.SetBool(DEFENDING, true);      // Set animator
+            rigidbody.velocity = new Vector2(0, 0); // Stop the char
+            stamina += Time.deltaTime * staminaIncrement;              // Boost the stamina
             return;
         }
         else
-            animator.SetBool(DEFENDING, false);
+        {
+            animator.SetBool(DEFENDING, false);     // Set animator
+        }
 
         ///// FLIP /////
         // Change the facing direction according to input
-        if (inputX > 0) FlipCharacter(true);
-        else if (inputX < 0) FlipCharacter(false);
+        if (inputX > 0f) FlipCharacter(true);
+        else if (inputX < 0f) FlipCharacter(false);
 
         ///// Move /////
         // Move left and right if we can animate new movement
@@ -192,6 +203,7 @@ public class StickPlayer : MonoBehaviour
             isJumping = false;
             rigidbody.velocity = new Vector2(rigidbody.velocity.x, jumpForce);
             groundSensor.Disable(0.2f);
+            stamina -= staminaJump;
         }
 
 
@@ -211,12 +223,16 @@ public class StickPlayer : MonoBehaviour
         {
             animator.SetTrigger(PUNCH_RUN);
             isRunPunching = false;
+
+            stamina -= punchRunHitPoint;
         }
         if (isPunching)
         {
             animator.SetTrigger(PUNCH_HIT);
             isPunching = false;
             canAnimate = false;
+
+            stamina -= punchHitPoint;
 
             // Make player stop to avoid unwanted moves
             rigidbody.velocity = new Vector2(0, rigidbody.velocity.y);
@@ -230,6 +246,8 @@ public class StickPlayer : MonoBehaviour
             if (inputX > 0) rigidbody.velocity = new Vector2(flyingKickForce, flyingKickUp);
             else rigidbody.velocity = new Vector2(-flyingKickForce, flyingKickUp);
 
+            stamina -= flyingKickHitPoint;
+
             isFlyKicking = false;
             canAnimate = false;
         }
@@ -238,12 +256,16 @@ public class StickPlayer : MonoBehaviour
             animator.SetTrigger(KICK);
             isKicking = false;
             canAnimate = false;
+
+            stamina -= kickHitPoint;
         }
         if (isTurningKicking)
         {
             animator.SetTrigger(TURNING_KICK);
 
             rigidbody.velocity = new Vector2(rigidbody.velocity.x, flyingKickUp);
+
+            stamina -= turningKickHitPoint;
 
             isTurningKicking = false;
             canAnimate = false;
@@ -270,10 +292,16 @@ public class StickPlayer : MonoBehaviour
     /*
     private void OnDrawGizmos()
     {
-        Vector2 drawGismos = new Vector2(turningKickHitLocation.position.x + 2.6f, turningKickHitLocation.position.y);
+        Vector2 drawGismos = new Vector2(turningKickHitLocation.position.x, turningKickHitLocation.position.y);
         Gizmos.DrawWireSphere(drawGismos, turningKickHitRange);
-    }
-    */
+
+        if (facingRightInt > 0) 
+            drawGismos = new Vector2(turningKickHitLocation.position.x - 2.6f, turningKickHitLocation.position.y);
+        else
+            drawGismos = new Vector2(turningKickHitLocation.position.x + 2.6f, turningKickHitLocation.position.y);
+        Gizmos.DrawWireSphere(drawGismos, turningKickHitRange); 
+    }*/
+    
     ///  ************************   ///
     ///      Animation Events       ///
     ///  ************************   ///
@@ -338,18 +366,25 @@ public class StickPlayer : MonoBehaviour
 
         if (!didKickFront)  // Kick the front first
         {
-            hitEnemies = Physics2D.OverlapCircleAll
-            (turningKickHitLocation.position, turningKickHitRange, enemyLayers);
+            hitEnemies = Physics2D.OverlapCircleAll(turningKickHitLocation.position, turningKickHitRange, enemyLayers);
 
             didKickFront = true;
         }
         else  // Then animation will call this second time. Kick the back then.
         {
-            Vector2 backLocation = new Vector2    // Get the back location
+            Vector2 backLocation;
+            if (facingRightInt > 0) // If we are facing right, then take -2.6 as our back, 
+            {
+                backLocation = new Vector2    // Get the back location
                 (turningKickHitLocation.position.x - 2.6f, turningKickHitLocation.position.y);
+            }
+            else                    // If we are facing lect, take +2.6 as our back
+            {
+                backLocation = new Vector2    // Get the back location
+                (turningKickHitLocation.position.x + 2.6f, turningKickHitLocation.position.y);
+            }
 
-            hitEnemies = Physics2D.OverlapCircleAll
-            (backLocation, turningKickHitRange, enemyLayers);
+            hitEnemies = Physics2D.OverlapCircleAll(backLocation, turningKickHitRange, enemyLayers);
 
             didKickFront = false; // Reset the var
         }
@@ -360,7 +395,7 @@ public class StickPlayer : MonoBehaviour
         {
             if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
             else damageFromRight = false;
-            enemy.GetComponent<StickBot>().TakenDamage(FLYING_KICK, flyingKickHitPoint, damageFromRight);
+            enemy.GetComponent<StickBot>().TakenDamage(TURNING_KICK, turningKickHitPoint, damageFromRight);
         }
     }
     private void KickFallBackUp()
