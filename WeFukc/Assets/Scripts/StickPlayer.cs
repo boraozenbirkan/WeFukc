@@ -166,9 +166,9 @@ public class StickPlayer : MonoBehaviour
         else if (Input.GetKeyDown("l") && grounded && velocityABS < 1f && stamina > kickHitPoint) isKicking = true;
         
         // Defense //
-        else if (Input.GetKeyDown("k")) isDefending = true;
+        else if (Input.GetKeyDown("s")) isDefending = true;
         // If the key is released
-        if (Input.GetKeyUp("k")) isDefending = false;
+        if (Input.GetKeyUp("s")) isDefending = false;
     }
 
     private void Actions()
