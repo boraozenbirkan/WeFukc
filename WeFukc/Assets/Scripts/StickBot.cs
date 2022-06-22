@@ -358,7 +358,7 @@ public class StickBot : MonoBehaviour
         if (!canAnimate) return; // If the char even can't move, don't take any damage
 
         health -= _takenDamagePoint;
-        if (health <= 0)
+        if (health <= 0f)
         {
             isDying = true;
             deathType = _takenDamageType;
@@ -366,7 +366,7 @@ public class StickBot : MonoBehaviour
 
         // Stop further animations and let the damage animation plays
         canAnimate = false;
-        rigidbody.velocity = Vector2.zero; // And stop the character completely
+        rigidbody.velocity = Vector3.zero; // And stop the character completely
 
         // Flip the character to the direction where the damage comes from
         if (_DamageDirection && facingRightInt != 1) FlipCharacter(true);
@@ -377,13 +377,15 @@ public class StickBot : MonoBehaviour
         else if (_takenDamageType == FLYING_KICK || _takenDamageType == TURNING_KICK) animator.SetTrigger(KICK_FALL);
         else animator.SetTrigger(DAMAGE_DOWN);
 
+        // Make attack sound (even though we got attacked, we make it)
+        FindObjectOfType<AudioManager>().PlayAttackSound();
+
         // Move away according to hit type
         if (_takenDamageType == PUNCH_RUN)
             rigidbody.velocity = new Vector2(-takenPunchMove * facingRightInt, rigidbody.velocity.y);
-        else if (_takenDamageType == FLYING_KICK || _takenDamageType == TURNING_KICK)
+        if (_takenDamageType == FLYING_KICK || _takenDamageType == TURNING_KICK)
             rigidbody.velocity = new Vector2(-takenKickMove * facingRightInt, rigidbody.velocity.y);
     }
-
     private void CheckDeath()
     {
         if (!isDying) return;
@@ -395,17 +397,18 @@ public class StickBot : MonoBehaviour
             bodyPart.SetActive(false);
         }
 
+
         // Death style
         if (deathType == PUNCH_HIT || deathType == PUNCH_RUN || deathType == TURNING_KICK)
-        {   // Head DAmage
+        {   // Head damage
             deadBody.SetActive(true);
-            deadBody_Head.GetComponent<Rigidbody2D>().AddForce(new Vector2(-2000 * facingRightInt, 0));
+            deadBody_Head.GetComponent<Rigidbody2D>().AddForce(new Vector2(-500, 0));
         }
         else // Down Damage
         {
             deadBody.SetActive(true);
-            deadBody_Leg.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1500 * facingRightInt, 0));
-            deadBody_Head.GetComponent<Rigidbody2D>().AddForce(new Vector2(500 * facingRightInt, 0));
+            deadBody_Leg.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1500, 0));
+            deadBody_Head.GetComponent<Rigidbody2D>().AddForce(new Vector2(500, 0));
         }
 
         // Now Trigger common death actions

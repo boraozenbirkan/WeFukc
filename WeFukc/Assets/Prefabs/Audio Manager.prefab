@@ -48,32 +48,79 @@ MonoBehaviour:
   - name: BlueStahli
     clip: {fileID: 8300000, guid: c093af222622997408a25d9eee83355d, type: 3}
     loop: 0
-    volume: 1
+    playOnAwake: 0
+    volume: 0.6
     pitch: 1
     source: {fileID: 0}
   - name: EpicHybrid
     clip: {fileID: 8300000, guid: 247803bd07f81d24ab1d5cba068f5714, type: 3}
     loop: 0
-    volume: 1
+    playOnAwake: 0
+    volume: 0.6
     pitch: 1
     source: {fileID: 0}
   - name: MetalCinematic
     clip: {fileID: 8300000, guid: 7a2b73a756a3cd449a5f3195c26bee34, type: 3}
     loop: 0
-    volume: 1
+    playOnAwake: 0
+    volume: 0.6
     pitch: 1
     source: {fileID: 0}
   - name: Ninja
     clip: {fileID: 8300000, guid: d4f6fceff86fa7f4f9cc6e868732362b, type: 3}
     loop: 0
-    volume: 1
+    playOnAwake: 0
+    volume: 0.6
     pitch: 1
     source: {fileID: 0}
   - name: ShadowWarrior
     clip: {fileID: 8300000, guid: b064ecbcd9bc32b4eb6ce1aa17ef8c63, type: 3}
     loop: 0
+    playOnAwake: 0
+    volume: 0.6
+    pitch: 1
+    source: {fileID: 0}
+  attackSFX:
+  - name: Attack_0
+    clip: {fileID: 8300000, guid: ef40e607abf600c43b40c76eeb972ed3, type: 3}
+    loop: 0
+    playOnAwake: 0
     volume: 1
     pitch: 1
     source: {fileID: 0}
-  attackSFX: []
-  otherSounds: []
+  - name: Attack_1
+    clip: {fileID: 8300000, guid: e4b45e53538d7f641b86c9aee38ef6f5, type: 3}
+    loop: 0
+    playOnAwake: 0
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: Attack_2
+    clip: {fileID: 8300000, guid: 1e0f9ca01b54ed5439a201d9ff85658e, type: 3}
+    loop: 0
+    playOnAwake: 0
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: Attack_3
+    clip: {fileID: 8300000, guid: 13efdfeaeb804ec498cdbd54883c12be, type: 3}
+    loop: 0
+    playOnAwake: 0
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  - name: Attack_4
+    clip: {fileID: 8300000, guid: 73c220edd04c7284cb048184ade578ed, type: 3}
+    loop: 0
+    playOnAwake: 0
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  otherSounds:
+  - name: Attack_Miss
+    clip: {fileID: 8300000, guid: baa1b1a21cddc0445adb83b098bb9b12, type: 3}
+    loop: 0
+    playOnAwake: 0
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}

@@ -12,8 +12,25 @@ public class LevelLoader : MonoBehaviour
     [SerializeField] Slider slider;
     [SerializeField] GameObject loadingObject;
     [SerializeField] GameObject nextSceneButton;
+    [SerializeField] TMPro.TextMeshProUGUI loadingText;
 
-    private bool startScene = true;
+    // Loading Texts
+    private string[] loadingTexts = {
+        "Did you know that Satoshi Nakamoto, the  **The Times 03/Jan/2009 Chancellor on brink of second bailout for banks.**. So what does it mean?",
+        "As of March 2021, COVID costs totaled $5.2 trillion. World War II cost $4.7 trillion (in today’s dollars)",
+        "US Government printed 30% of the all money in US history just in last 2 years.",
+        "When goverments and banks print money, they basically take your money from your pocket. Because they are decreasing value of the money by increasing the supply.",
+        "In 2008, governments rescued the bank from bankruptcy. Even though banks cause the crisis, they did not pay the cost, you did.",
+        "Did you know that private banks print money? Not only governments and central banks, but private banks print money also",
+        "Who the fukc are you?",
+        "Do you know what fractional reserve banking means? This is the system all banks use. What it means is, that they only hold a fraction of the reserves they suppose to hold. Therefore, if everyone tries to get withdraw their money, only elites can get it. Even elites can not get their all money!",
+        "Do you know what is lobbying? In simple terms, corporations finance politicians, and politicians make laws in favor of those corporations. Yes, it is legal and quite common.",
+        "Freedom of speech? Free market? Freedom? Do you believe they are real, right? Ahaha you are so naive!",
+        "Rights are not granted, they are taken. If you want your rights, you have to take them!",
+        "Agustin Carstens, the General Manager of BIS (the bank of all central banks) said **Central banks will have absolute control over how money is spent!** for their own digital money model, CDBC!",
+        "Learn why Bitcoin is invented!"
+    };
+
     private float progress;
 
     private void Awake()
@@ -31,17 +48,12 @@ public class LevelLoader : MonoBehaviour
     }
     private void Start()
     {
-        SetStartScene(true);      // Start loaded when the game starts
+        CloseLoadingScreen();      // Start loaded when the game starts
     }
 
-    public void LoadLevel(string levelName)
-    {
-        startScene = false;          // loading just started
-        loadingScreen.SetActive(true);  // activate loading screen
-        loadingObject.SetActive(true);  // activate loading slider
-
-        StartCoroutine(LoadAsynchronously(levelName)); // Start loading proccess
-    }
+    ///     ************        ///
+    ///    Private Methods      ///       
+    ///     ************        ///
 
     IEnumerator LoadAsynchronously(string levelName)
     {
@@ -58,20 +70,37 @@ public class LevelLoader : MonoBehaviour
         SceneLoaded();
     }
 
-    public void SetStartScene(bool action) { 
-        startScene = action; 
-
-        if (startScene) { 
-            loadingObject.SetActive(true);      // Open slider again
-            nextSceneButton.SetActive(false);   // Close the button
-            loadingScreen.SetActive(false);     // Close whole loading screen            
-        }
-    }
-
     private void SceneLoaded()
     {
         loadingObject.SetActive(false);     // Remove slider
         nextSceneButton.SetActive(true);    // Place skip button
-        Debug.Log("getting here 222");
+    }
+
+    ///     ************        ///
+    ///    Public Methods       ///       
+    ///     ************        ///
+    
+    
+    public void LoadLevel(string levelName)
+    {
+        loadingScreen.SetActive(true);  // activate loading screen
+        loadingObject.SetActive(true);  // activate loading slider
+
+        // Give random text for loading screen
+        loadingText.text = loadingTexts[Random.Range(0, loadingTexts.Length)];  
+
+        StartCoroutine(LoadAsynchronously(levelName)); // Start loading proccess
+    }
+    public void CloseLoadingScreen()
+    {
+        loadingObject.SetActive(true);      // Open slider again
+        nextSceneButton.SetActive(false);   // Close the button
+        loadingScreen.SetActive(false);     // Close whole loading screen            
+    }
+    public bool isSceneReady()
+    {
+        // if loading screen is active, then scene is not ready
+        if (loadingScreen.activeSelf) return false;
+        else return true;
     }
 }

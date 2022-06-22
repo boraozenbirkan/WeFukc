@@ -36,6 +36,7 @@ public class AudioManager : MonoBehaviour
             sound.source.volume = sound.volume;
             sound.source.pitch = sound.pitch;
             sound.source.loop = sound.loop;
+            sound.source.playOnAwake = sound.playOnAwake;
         }
         foreach (Sound sound in attackSFX)
         {
@@ -44,6 +45,7 @@ public class AudioManager : MonoBehaviour
             sound.source.volume = sound.volume;
             sound.source.pitch = sound.pitch;
             sound.source.loop = sound.loop;
+            sound.source.playOnAwake = sound.playOnAwake;
         }
         foreach (Sound sound in otherSounds)
         {
@@ -52,6 +54,7 @@ public class AudioManager : MonoBehaviour
             sound.source.volume = sound.volume;
             sound.source.pitch = sound.pitch;
             sound.source.loop = sound.loop;
+            sound.source.playOnAwake = sound.playOnAwake;
         }
     }
 
@@ -80,13 +83,24 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySFX(string soundName)
     {
-        Sound sound = Array.Find(otherSounds, item => item.name == soundName);
-        if (sound == null)
+        foreach (Sound sound in otherSounds)
+        {
+            Debug.Log("checking: " + sound.name);
+            if (sound.name == soundName)
+            {
+                Debug.Log("exist");
+                sound.source.Play();
+                return;
+            }
+        }
+        /*
+        Sound s = Array.Find(otherSounds, sound => sound.name == soundName);
+        if (s == null)
         {
             Debug.LogWarning("Sound: " + soundName + " not found!");
             return;
         }
-        sound.source.Play();
+        s.source.Play();*/
     }
     public void StopSFX(string soundName)
     {

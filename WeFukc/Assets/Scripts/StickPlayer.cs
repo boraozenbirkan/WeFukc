@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class StickPlayer : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class StickPlayer : MonoBehaviour
     [SerializeField] private float flyingKickForce = 5f;
     [SerializeField] private float flyingKickUp = 5f;
     [SerializeField] private StickSensor groundSensor;
+    [SerializeField] private Slider healthSlider;
+    [SerializeField] private Slider staminaSlider;
+    [SerializeField] private Slider rageSlider;
 
     [Header("Specs")]
     [SerializeField] private float maxHealth = 100f;
@@ -40,6 +44,7 @@ public class StickPlayer : MonoBehaviour
     [SerializeField] private float takenPunchMove = 3f;
     [SerializeField] private float takenKickMove = 6f;
 
+    // Other game objects and components
     private Animator animator;
     private Rigidbody2D rigidbody;
 
@@ -69,6 +74,8 @@ public class StickPlayer : MonoBehaviour
     private bool isDefending = false;
     private bool didKickFront = false;
     Collider2D[] hitEnemies;
+    private bool allowMissSound = true;
+    private float missSoundDelay = 1f;
 
     private const string SPEED = "Speed"; 
     private const string ON_AIR= "OnAir"; 
@@ -89,7 +96,9 @@ public class StickPlayer : MonoBehaviour
         rigidbody = GetComponent<Rigidbody2D>();
 
         health = maxHealth;
+        healthSlider.value = health;
         stamina = maxStamina;
+        staminaSlider.value = stamina;
 
         // Get the initial facing direction
         if (transform.localScale.x > 0f) facingRightInt = 1f;
@@ -100,27 +109,30 @@ public class StickPlayer : MonoBehaviour
 
     private void Update()
     {
-        ///  ************************   ///
-        ///        Status Check         ///
-        ///  ************************   ///
-        ///  
+        // if scene is not ready, do not execute anything
+        if (!FindObjectOfType<LevelLoader>().isSceneReady()) return;
+
+        if (!allowMissSound)
+        {
+            missSoundDelay -= Time.deltaTime;
+            if (missSoundDelay <= 0f)
+            {
+                allowMissSound = true;
+                missSoundDelay = 1f;
+            }
+        }
+
 
         // Debug Fights
-        //if (Input.GetMouseButtonDown(0)) { TakenDamage(PUNCH_RUN, 5); }
-        //if (Input.GetMouseButtonDown(1)) { TakenDamage(FLYING_KICK, 5); }
+        if (Input.GetMouseButtonDown(0)) { TakenDamage(PUNCH_RUN, 5, true); }
+        if (Input.GetMouseButtonDown(1)) { TakenDamage(FLYING_KICK, 5, true); }
 
         if (stamina < 100f) stamina += Time.deltaTime * staminaIncrement;  // Increase stamina 1 point every second
         else stamina = 100f;                            // If it exceed 100, set it as 100
+        staminaSlider.value = stamina;
 
         StatusCheck();
         Actions();
-    }
-    private void FixedUpdate()
-    {
-        ///  ************************   ///
-        ///          EXECUTIONS         ///
-        ///  ************************   ///
-
     }
 
     private void StatusCheck()
@@ -218,6 +230,7 @@ public class StickPlayer : MonoBehaviour
         // Jump
         animator.SetBool(ON_AIR, !grounded);
 
+        #region Animation Check
         // Punching //
         if (isRunPunching)
         {
@@ -270,7 +283,7 @@ public class StickPlayer : MonoBehaviour
             isTurningKicking = false;
             canAnimate = false;
         }
-
+        #endregion
 
 
     }
@@ -318,6 +331,8 @@ public class StickPlayer : MonoBehaviour
             else damageFromRight = false;
             enemy.GetComponent<StickBot>().TakenDamage(PUNCH_HIT, punchHitPoint, damageFromRight);
         }
+
+        if (hitEnemies.Length < 1) FindObjectOfType<AudioManager>().PlaySFX("Attack_Miss");
     }
     private void PunchRunHit()
     {   // Punch run uses the same location as normal punch but has different hit points
@@ -331,6 +346,13 @@ public class StickPlayer : MonoBehaviour
             if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
             else damageFromRight = false;
             enemy.GetComponent<StickBot>().TakenDamage(PUNCH_RUN, punchRunHitPoint, damageFromRight);
+        }
+
+        // Flygin Kick and running punch has allowAttackSound restriction to avoid multiple sounds in one shot
+        if (allowMissSound)
+        {
+            if (hitEnemies.Length < 1) FindObjectOfType<AudioManager>().PlaySFX("Attack_Miss");
+            allowMissSound = false;
         }
     }
     private void KickHit()
@@ -346,6 +368,8 @@ public class StickPlayer : MonoBehaviour
             else damageFromRight = false;
             enemy.GetComponent<StickBot>().TakenDamage(KICK, kickHitPoint, damageFromRight);
         }
+
+        if (hitEnemies.Length < 1) FindObjectOfType<AudioManager>().PlaySFX("Attack_Miss");
     }
     private void FlyingKickHit()
     {
@@ -359,6 +383,13 @@ public class StickPlayer : MonoBehaviour
             if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
             else damageFromRight = false;
             enemy.GetComponent<StickBot>().TakenDamage(FLYING_KICK, flyingKickHitPoint, damageFromRight);
+        }
+
+        // Flygin Kick and running punch has allowAttackSound restriction to avoid multiple sounds in one shot
+        if (allowMissSound)
+        {
+            if (hitEnemies.Length < 1) FindObjectOfType<AudioManager>().PlaySFX("Attack_Miss");
+            allowMissSound = false;
         }
     }
     private void TurningKickHit()
@@ -397,6 +428,8 @@ public class StickPlayer : MonoBehaviour
             else damageFromRight = false;
             enemy.GetComponent<StickBot>().TakenDamage(TURNING_KICK, turningKickHitPoint, damageFromRight);
         }
+
+        if (hitEnemies.Length < 1) FindObjectOfType<AudioManager>().PlaySFX("Attack_Miss");
     }
     private void KickFallBackUp()
     {   // Push forward when its standing up again
@@ -417,11 +450,13 @@ public class StickPlayer : MonoBehaviour
         if (!canAnimate) return; // If the char even can't move, don't take any damage
 
         health -= _takenDamagePoint; 
-        if (health <=    0)
+        if (health <= 0f)
         {
             isDying = true;
             deathType = _takenDamageType;
+            healthSlider.value = 0f;
         }
+        healthSlider.value = health;
 
         // Stop further animations and let the damage animation plays
         canAnimate = false;
@@ -435,6 +470,9 @@ public class StickPlayer : MonoBehaviour
         if (_takenDamageType == PUNCH_HIT || _takenDamageType == PUNCH_RUN) animator.SetTrigger(DAMAGE_HEAD);
         else if (_takenDamageType == FLYING_KICK ||_takenDamageType == TURNING_KICK) animator.SetTrigger(KICK_FALL);
         else animator.SetTrigger(DAMAGE_DOWN);
+
+        // Make attack sound (even though we got attacked, we make it)
+        FindObjectOfType<AudioManager>().PlayAttackSound();
 
         // Move away according to hit type
         if (_takenDamageType == PUNCH_RUN) 
