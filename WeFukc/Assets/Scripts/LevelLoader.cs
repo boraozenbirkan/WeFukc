@@ -18,7 +18,7 @@ public class LevelLoader : MonoBehaviour
     private string[] loadingTexts = {
         "Did you know that Satoshi Nakamoto, the  **The Times 03/Jan/2009 Chancellor on brink of second bailout for banks.**. So what does it mean?",
         "As of March 2021, COVID costs totaled $5.2 trillion. World War II cost $4.7 trillion (in today’s dollars)",
-        "US Government printed 30% of the all money in US history just in last 2 years.",
+        "In last 2 years, US Government printed 30% of the all money in the US history!",
         "When goverments and banks print money, they basically take your money from your pocket. Because they are decreasing value of the money by increasing the supply.",
         "In 2008, governments rescued the bank from bankruptcy. Even though banks cause the crisis, they did not pay the cost, you did.",
         "Did you know that private banks print money? Not only governments and central banks, but private banks print money also",
@@ -28,7 +28,9 @@ public class LevelLoader : MonoBehaviour
         "Freedom of speech? Free market? Freedom? Do you believe they are real, right? Ahaha you are so naive!",
         "Rights are not granted, they are taken. If you want your rights, you have to take them!",
         "Agustin Carstens, the General Manager of BIS (the bank of all central banks) said **Central banks will have absolute control over how money is spent!** for their own digital money model, CDBC!",
-        "Learn why Bitcoin is invented!"
+        "Learn why Bitcoin is invented!",
+        "Be aware of your potential!",
+        "Respect yourself and stand for your rights!"
     };
 
     private float progress;

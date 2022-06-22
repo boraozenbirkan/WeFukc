@@ -112,6 +112,13 @@ public class StickPlayer : MonoBehaviour
         // if scene is not ready, do not execute anything
         if (!FindObjectOfType<LevelLoader>().isSceneReady()) return;
 
+        // If dying, stop and return
+        if (isDying)
+        {
+            rigidbody.velocity = Vector3.zero;
+            return;
+        }
+
         if (!allowMissSound)
         {
             missSoundDelay -= Time.deltaTime;
@@ -164,6 +171,7 @@ public class StickPlayer : MonoBehaviour
             isJumping = true;
         }
 
+        // Gettin velocity
         velocityABS = Mathf.Abs(rigidbody.velocity.x);
 
         ///// Fight /////
@@ -178,7 +186,7 @@ public class StickPlayer : MonoBehaviour
         else if (Input.GetKeyDown("l") && grounded && velocityABS < 1f && stamina > kickHitPoint) isKicking = true;
         
         // Defense //
-        else if (Input.GetKeyDown("s")) isDefending = true;
+        else if (Input.GetKeyDown("s") || Input.GetKey("s")) isDefending = true;
         // If the key is released
         if (Input.GetKeyUp("s")) isDefending = false;
     }
@@ -447,7 +455,7 @@ public class StickPlayer : MonoBehaviour
     // TakenDamage is a one-size-fits-all method
     public void TakenDamage(string _takenDamageType, float _takenDamagePoint, bool _DamageDirection)
     {
-        if (!canAnimate) return; // If the char even can't move, don't take any damage
+        if (!canAnimate || isDefending) return; // If the char even can't move, don't take any damage
 
         health -= _takenDamagePoint; 
         if (health <= 0f)
