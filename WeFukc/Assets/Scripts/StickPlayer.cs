@@ -103,6 +103,9 @@ public class StickPlayer : MonoBehaviour
         // Get the initial facing direction
         if (transform.localScale.x > 0f) facingRightInt = 1f;
         else facingRightInt = -1f;
+
+        // Make player always chasing to avoid it get into slow walk anim like bots
+        animator.SetBool("isChasing", true);
     }
 
 

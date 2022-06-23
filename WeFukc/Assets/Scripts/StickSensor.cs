@@ -6,6 +6,7 @@ public class StickSensor : MonoBehaviour
 {
     int m_CollisionCounter = 0;
     float m_DisableTimer;
+    bool isDisabled = false;
 
     // Count collisions.
     private void OnTriggerEnter2D(Collider2D collision)
@@ -31,6 +32,8 @@ public class StickSensor : MonoBehaviour
         {
             m_DisableTimer -= Time.deltaTime;
         }
+        else
+            isDisabled = false;
     }
     /*
     private void Start()
@@ -41,5 +44,8 @@ public class StickSensor : MonoBehaviour
     public void Disable(float duration)
     {
         m_DisableTimer = duration;
+        isDisabled = true;
     }
+
+    public bool isSensorDisabled() { return isDisabled; }
 }
