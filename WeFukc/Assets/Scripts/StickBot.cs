@@ -85,9 +85,14 @@ public class StickBot : MonoBehaviour
     private const string KICK_FALL = "KickFall";
 
     // Bot vars
-    private bool walkingRight = false;
-    private bool runningRight = false;
+    private bool isWalkingRight = false;
+    private bool isRunningRight = false;
     private bool isChasing = false;
+    private bool isStopped = false;
+    private float patrolMaxChangeTime = 25f;   // Change time 5-25
+    private float patrolMaxStopTime = 10f;     // Stop time 3-10
+    private float patrolChangeTime;   // Change time 5-25
+    private float patrolStopTime;     // Stop time 3-10
 
 
     private void Start()
@@ -100,6 +105,9 @@ public class StickBot : MonoBehaviour
         // Get the initial facing direction
         if (transform.localScale.x > 0f) facingRightInt = 1f;
         else facingRightInt = -1f;
+
+        patrolStopTime = patrolMaxStopTime;
+        patrolChangeTime = patrolMaxChangeTime;
     }
 
 
@@ -127,6 +135,7 @@ public class StickBot : MonoBehaviour
         }
 
         StatusCheck();
+        States();
         Actions();
     }
 
@@ -148,49 +157,7 @@ public class StickBot : MonoBehaviour
             }
         }
 
-        // Movement = speeds
-        if (walkingRight)
-        {
-            movement = movementSpeed / 8;
-
-            // Don't check sensors when they are disabled
-            if (endDownSensor.isSensorDisabled()) return;
-
-            // If bot comes an edge
-            if (!endDownSensor.State())
-            {
-                walkingRight = false;
-                endDownSensor.Disable(0.1f);
-            }
-            // if bot comes to a wall
-            if (endDownSensor.State() && endUpSensor.State())
-            {
-                walkingRight = false;
-                endDownSensor.Disable(0.1f);
-                endUpSensor.Disable(0.1f);
-            }
-        }
-        else
-        {
-            movement = -movementSpeed / 8;
-
-            // Don't check sensors when they are disabled
-            if (endDownSensor.isSensorDisabled()) return;
-
-            // If bot comes an edge
-            if (!endDownSensor.State())
-            {
-                walkingRight = true;
-                endDownSensor.Disable(0.1f);
-            }
-            // if bot comes to a wall
-            if (endDownSensor.State() && endUpSensor.State())
-            {
-                walkingRight = true;
-                endDownSensor.Disable(0.1f);
-                endUpSensor.Disable(0.1f);
-            }
-        }
+        
 
         if (!canAnimate) return;
 
@@ -220,6 +187,120 @@ public class StickBot : MonoBehaviour
         // If the key is released
         if (Input.GetKeyUp("s")) isDefending = false;
         */
+    }
+
+    private void States()
+    {
+        // is chasing?
+            // is needed to jump
+                // Jump
+            // is close combat
+                // Slow Walk
+                    // is inRange?
+                        // Hit
+            // else
+                // Run
+        // Patrol
+            // Slow Walk w/o Guard
+        // isStopped
+
+
+        if (isChasing)
+        {
+
+        }
+
+        // Movement = speeds
+        else if (isWalkingRight && !isStopped)
+        {
+            movement = movementSpeed / 8;
+
+            // Don't check sensors when they are disabled
+            if (endDownSensor.isSensorDisabled()) return;
+
+            // If bot comes an edge
+            if (!endDownSensor.State())
+            {
+                ChangePatrolDirection();
+            }
+            // if bot comes to a wall
+            if (endDownSensor.State() && endUpSensor.State())
+            {
+                ChangePatrolDirection();
+            }
+        }
+        else if (!isWalkingRight && !isStopped)
+        {
+            movement = -movementSpeed / 8;
+
+            // Don't check sensors when they are disabled
+            if (endDownSensor.isSensorDisabled()) return;
+
+            // If bot comes an edge
+            if (!endDownSensor.State())
+            {
+                ChangePatrolDirection();
+            }
+            // if bot comes to a wall
+            if (endDownSensor.State() && endUpSensor.State())
+            {
+                ChangePatrolDirection();
+            }
+        }
+
+        else if (isStopped) { movement = 0; }
+
+        // Patrol State Change - Making a natural patrolling
+        if (!isChasing)
+        {
+            if (isStopped)
+            {   // Check if our stop time is finished
+                if (patrolStopTime < 0)
+                {
+                    // Take new change time for actions
+                    patrolChangeTime = Random.Range(5, patrolMaxChangeTime);
+
+                    // Change the direction by 30% chance
+                    if (Random.Range(0f, 10f) < 3)
+                    {
+                        if (isWalkingRight) isWalkingRight = false;
+                        else isWalkingRight = true;
+                    }
+
+                    isStopped = false;
+                }
+                else patrolStopTime -= Time.deltaTime; // If not finished, then decrease
+            }
+            else  // if we are on move
+            {   // Check if our patrol time is finihed
+                if (patrolChangeTime < 0)
+                {
+                    // Take new stop time
+                    patrolStopTime = Random.Range(3, patrolMaxStopTime);
+                    isStopped = true;
+                }
+                else patrolChangeTime -= Time.deltaTime; // If not finished, then decrese the time
+            }
+        }
+    }
+
+    private void ChangePatrolDirection()
+    {
+        if (isWalkingRight)
+        {
+            isWalkingRight = false;
+            endDownSensor.Disable(0.1f);
+            endUpSensor.Disable(0.1f);
+        }
+        else
+        {
+            isWalkingRight = true;
+            endDownSensor.Disable(0.1f);
+            endUpSensor.Disable(0.1f);
+        }
+
+        // Get new patrol time because we have turned into a new direction
+        patrolChangeTime = Random.Range(5, patrolMaxChangeTime);
     }
 
     private void Actions()
