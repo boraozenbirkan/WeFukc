@@ -210,9 +210,9 @@ GameObject:
   - component: {fileID: 61482688}
   - component: {fileID: 61482690}
   - component: {fileID: 61482689}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Floor (2)
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -320,6 +320,10 @@ PrefabInstance:
     - target: {fileID: 4049432498126308301, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
       propertyPath: m_Name
       value: Stickbot (6)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049432498126308302, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
+      propertyPath: botTier
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4049432498126308302, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
       propertyPath: maxRange
@@ -540,9 +544,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 152122707}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Platform
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -569,7 +573,7 @@ Transform:
   - {fileID: 1033356093}
   - {fileID: 487653160}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &177976500
 GameObject:
@@ -865,6 +869,10 @@ PrefabInstance:
       value: Stickbot (1)
       objectReference: {fileID: 0}
     - target: {fileID: 4049432498126308302, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
+      propertyPath: botTier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049432498126308302, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
       propertyPath: maxRange
       value: 25
       objectReference: {fileID: 0}
@@ -1015,9 +1023,9 @@ GameObject:
   - component: {fileID: 487653163}
   - component: {fileID: 487653162}
   - component: {fileID: 487653161}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Upper Platform (4)
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1355,6 +1363,10 @@ PrefabInstance:
     - target: {fileID: 4049432498126308301, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
       propertyPath: m_Name
       value: Stickbot (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049432498126308302, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
+      propertyPath: botTier
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4049432498126308302, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
       propertyPath: maxRange
@@ -1754,7 +1766,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1033356092
 GameObject:
@@ -1768,9 +1780,9 @@ GameObject:
   - component: {fileID: 1033356096}
   - component: {fileID: 1033356095}
   - component: {fileID: 1033356094}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Upper Platform (3)
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1897,6 +1909,10 @@ PrefabInstance:
     - target: {fileID: 4049432498126308301, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
       propertyPath: m_Name
       value: Stickbot (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049432498126308302, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
+      propertyPath: botTier
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4049432498126308302, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
       propertyPath: maxRange
@@ -2044,6 +2060,10 @@ PrefabInstance:
       value: Stickbot (2)
       objectReference: {fileID: 0}
     - target: {fileID: 4049432498126308302, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
+      propertyPath: botTier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049432498126308302, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
       propertyPath: maxRange
       value: 25
       objectReference: {fileID: 0}
@@ -2111,6 +2131,10 @@ PrefabInstance:
     - target: {fileID: 4049432498126308301, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
       propertyPath: m_Name
       value: Stickbot (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049432498126308302, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
+      propertyPath: botTier
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4049432498126308302, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
       propertyPath: maxRange
@@ -2418,9 +2442,9 @@ GameObject:
   - component: {fileID: 1329451104}
   - component: {fileID: 1329451103}
   - component: {fileID: 1329451102}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Floor (1)
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2851,7 +2875,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7777778, y: 1}
+    m_SensorSize: {x: 1.7793428, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -3098,9 +3122,9 @@ GameObject:
   - component: {fileID: 1684455651}
   - component: {fileID: 1684455653}
   - component: {fileID: 1684455652}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Floor (3)
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3209,9 +3233,9 @@ GameObject:
   - component: {fileID: 1735094545}
   - component: {fileID: 1735094547}
   - component: {fileID: 1735094546}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Floor (4)
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3321,6 +3345,10 @@ PrefabInstance:
       value: Stickbot (7)
       objectReference: {fileID: 0}
     - target: {fileID: 4049432498126308302, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
+      propertyPath: botTier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4049432498126308302, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
       propertyPath: maxRange
       value: 25
       objectReference: {fileID: 0}
@@ -3390,9 +3418,9 @@ GameObject:
   - component: {fileID: 1862511412}
   - component: {fileID: 1862511411}
   - component: {fileID: 1862511414}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Upper Platform
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3764,7 +3792,7 @@ RectTransform:
   m_Children:
   - {fileID: 1169259865}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3823,9 +3851,9 @@ GameObject:
   - component: {fileID: 2099462420}
   - component: {fileID: 2099462419}
   - component: {fileID: 2099462418}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Upper Platform (2)
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3954,9 +3982,9 @@ GameObject:
   - component: {fileID: 2107129927}
   - component: {fileID: 2107129926}
   - component: {fileID: 2107129925}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Upper Platform (1)
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4162,7 +4190,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1789011466367112070, guid: fcaabda75a1e349419691f3f30337823, type: 3}
       propertyPath: m_RootOrder
-      value: 9
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1789011466367112070, guid: fcaabda75a1e349419691f3f30337823, type: 3}
       propertyPath: m_LocalScale.x
@@ -4290,9 +4318,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Stickbot
       objectReference: {fileID: 0}
+    - target: {fileID: 4049432498126308302, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
+      propertyPath: botTier
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4049432498126308306, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
       propertyPath: m_RootOrder
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 4049432498126308306, guid: 6e2b2913c6844e54bad1ed4da1e7745b, type: 3}
       propertyPath: m_LocalPosition.x

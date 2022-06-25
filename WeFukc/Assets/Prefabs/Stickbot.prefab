@@ -45,6 +45,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbafb5a4e011ec743890684f16ebba6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  acceptedLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!58 &985566830
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -106,6 +109,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbafb5a4e011ec743890684f16ebba6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  acceptedLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!61 &1551771624
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -177,6 +183,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbafb5a4e011ec743890684f16ebba6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  acceptedLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!58 &1594935558
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -873,6 +882,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbafb5a4e011ec743890684f16ebba6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  acceptedLayer:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!58 &4049432496515810834
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2907,18 +2919,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSpeed: 10
   jumpForce: 30
-  flyingKickForce: 10
-  flyingKickUp: 10
+  flyingKickForce: 15
+  flyingKickUp: 15
   groundSensor: {fileID: 4049432496515810833}
   endUpSensor: {fileID: 1594935559}
   endDownSensor: {fileID: 985566831}
   jumpUpSensor: {fileID: 1551771623}
-  maxRange: 25
-  followDistance: 25
-  showRangeAndDistance: 0
   maxHealth: 100
-  maxStamina: 100
-  staminaIncrement: 4
   punchHitPoint: 5
   punchRunHitPoint: 5
   kickHitPoint: 5
@@ -2946,3 +2953,7 @@ MonoBehaviour:
   takenPunchMove: 1
   takenKickMove: 5
   approachDistance: 5
+  detectionRange: 15
+  followDistance: 15
+  showRangeAndDistance: 1
+  botTier: 2

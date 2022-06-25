@@ -132,6 +132,7 @@ public class StickPlayer : MonoBehaviour
             }
         }
 
+        // Debug.Log("Collider Transform: " + GetComponent<Collider2D>().GetComponentInParent<Transform>().position);
 
         // Debug Fights
         //if (Input.GetMouseButtonDown(0)) { TakenDamage(PUNCH_RUN, 5, true); }

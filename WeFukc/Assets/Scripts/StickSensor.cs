@@ -7,15 +7,23 @@ public class StickSensor : MonoBehaviour
     int m_CollisionCounter = 0;
     float m_DisableTimer;
     bool isDisabled = false;
+    
 
     // Count collisions.
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        m_CollisionCounter++;
+        //Debug.Log("Colliding with " + collision.gameObject.name + "    Tag: " + collision.gameObject.tag);
+        if (collision.gameObject.tag == "Ground")
+        {
+            m_CollisionCounter++;
+        }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        m_CollisionCounter--;
+        if (collision.gameObject.tag == "Ground")
+        {
+            m_CollisionCounter--;
+        }
     }
 
     // If there is any collision still exist, return true
@@ -25,6 +33,8 @@ public class StickSensor : MonoBehaviour
             return false;
         return m_CollisionCounter > 0;
     }
+
+    public int GetNumberOfCollide() { return m_CollisionCounter; }
 
     void Update()
     {

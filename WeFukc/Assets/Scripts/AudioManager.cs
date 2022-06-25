@@ -85,10 +85,8 @@ public class AudioManager : MonoBehaviour
     {
         foreach (Sound sound in otherSounds)
         {
-            Debug.Log("checking: " + sound.name);
             if (sound.name == soundName)
             {
-                Debug.Log("exist");
                 sound.source.Play();
                 return;
             }

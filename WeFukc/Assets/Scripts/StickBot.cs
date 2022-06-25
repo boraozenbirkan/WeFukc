@@ -12,14 +12,9 @@ public class StickBot : MonoBehaviour
     [SerializeField] private StickSensor endUpSensor;
     [SerializeField] private StickSensor endDownSensor;
     [SerializeField] private StickSensor jumpUpSensor;
-    [SerializeField] private float maxRange = 10f;
-    [SerializeField] private float followDistance = 10f;
-    [SerializeField] private bool showRangeAndDistance = false;
 
     [Header("Specs")]
     [SerializeField] private float maxHealth = 100f;
-    [SerializeField] private float maxStamina = 100f;
-    [SerializeField] private float staminaIncrement = 4f;
     [SerializeField] private float punchHitPoint = 5f;
     [SerializeField] private float punchRunHitPoint = 10f;
     [SerializeField] private float kickHitPoint = 5f;
@@ -61,7 +56,6 @@ public class StickBot : MonoBehaviour
     private bool canAnimate = true;
     private float movement = 0f;
     private float facingRightInt = 0f;
-    private float velocityABS = 0f;
 
     // Fighting vars
     private bool isPunching = false;
@@ -93,7 +87,6 @@ public class StickBot : MonoBehaviour
 
     // Bot vars
     private bool isWalkingRight = false;
-    private bool isRunningRight = false;
     private bool isChasing = false;
     private bool isStopped = false;
 
@@ -105,6 +98,18 @@ public class StickBot : MonoBehaviour
     private StickPlayer target = null;
     private Collider2D targetCollider = null;
     public float approachDistance = 5;
+
+    [Header("Bot Specs")]
+    private float hitDelay;
+    private float currentHitDelay;
+    private bool canFlyKick = false;
+    private int flyKickChance = 2;
+    [SerializeField] private float detectionRange = 10f;
+    [SerializeField] private float followDistance = 10f;
+    [SerializeField] private bool showRangeAndDistance = false;
+    [SerializeField] [Range(1, 15)] private int botTier = 1;
+
+
 
 
     private void Start()
@@ -123,6 +128,7 @@ public class StickBot : MonoBehaviour
 
         // Change max speed with a random number to avoid sentetic view of bots when they act together
         movementSpeed = Random.Range(8f, 15f);
+        SetTier(botTier);   // Set bot's specs
     }
 
 
@@ -149,12 +155,11 @@ public class StickBot : MonoBehaviour
             }
         }
 
-        StatusCheck();
         States();
         Actions();
     }
 
-    private void StatusCheck()
+    private void States()
     {
         // GROUND CHECK
         // Check the ground if only player stays stable or goes down in Y axis
@@ -172,44 +177,10 @@ public class StickBot : MonoBehaviour
             }
         }
 
-        
-
-        if (!canAnimate) return;
-
-        /*
-        if (Input.GetButtonDown("Jump") && grounded)
-        {
-            isJumping = true;
-        }
-        */
-
-        // Gettin velocity
-        velocityABS = Mathf.Abs(rigidbody.velocity.x);
-        /*
-        ///// Fight /////
-        if (!grounded) return;  // On air, not get fighting input
-        // Punching // 
-        if (Input.GetKeyDown("j") && velocityABS > 10f) isRunPunching = true;
-        else if (Input.GetKeyDown("j") && velocityABS < 1f) isPunching = true;
-
-        // Kicking //
-        else if (Input.GetKeyDown("l") && grounded && Input.GetKey("w")) isTurningKicking = true;
-        else if (Input.GetKeyDown("l") && grounded && velocityABS > 2f) isFlyKicking = true;
-        else if (Input.GetKeyDown("l") && grounded && velocityABS < 1f) isKicking = true;
-
-        // Defense //
-        else if (Input.GetKeyDown("s") || Input.GetKey("s")) isDefending = true;
-        // If the key is released
-        if (Input.GetKeyUp("s")) isDefending = false;
-        */
-    }
-
-    private void States()
-    {        
         if (!isChasing)
         {   
             // If we are not chasing, check the range if there is any
-            targetCollider = Physics2D.OverlapBox(transform.position, new Vector2(maxRange, 3), 0f, enemyLayers);
+            targetCollider = Physics2D.OverlapBox(transform.position, new Vector2(detectionRange, 3), 0f, enemyLayers);
 
             if (targetCollider != null)
             {
@@ -303,9 +274,15 @@ public class StickBot : MonoBehaviour
                 return;             // Don't execute below code
             }
 
+            // Decrease hit delay
+            currentHitDelay -= Time.deltaTime;
+
             // Check the direction
             Vector2 targetPos = target.transform.position;
             Vector2 myPos = transform.position;
+
+
+            // MOVING TO RIGHT
 
             if (targetPos.x > myPos.x) // If target is on the right
             {
@@ -316,19 +293,41 @@ public class StickBot : MonoBehaviour
                 animator.SetBool(CLOSE_COMBAT, false);
                 animator.SetBool(FACE_TO_FACE, false);
 
+                if (!canAnimate || !grounded) return;   // if can't animate or on air, don't take action
+
                 // If we are approaching
                 if (xDistance < approachDistance)
                 {
                     movement = movementSpeed / 8;   // Walking / Approaching speed
                     animator.SetBool(CLOSE_COMBAT, true);
 
+                    // Fly Kick Here
+                    if (currentHitDelay < 0 && canFlyKick && Random.Range(0, 10) < flyKickChance)
+                    {
+                        currentHitDelay = hitDelay;     // Reset the hit delay
+                        isFlyKicking = true;
+                    }
 
                     if (xDistance < 2.5f)
                     {
                         movement = 0;    // If we are face-to-face then stop
                         animator.SetBool(FACE_TO_FACE, true);
+
+                        // Kick and Punch here
+                        if (currentHitDelay < 0)
+                        {
+                            currentHitDelay = hitDelay; // Reset the hit delay
+
+                            // Kick or Punch by 50%
+                            if (Random.Range(0, 10) < 5) isKicking = true;
+                            else isPunching = true;
+                        }
                     }
                 }
+
+                // JUMP Conditions
+
+                if (!canAnimate || !grounded) return;   // if can't animate or on air, don't jump
 
                 // If bot is too close to target, don't even check for jump
                 if (xDistance < 3f) return;
@@ -341,6 +340,8 @@ public class StickBot : MonoBehaviour
                     isJumping = true;
                 }
             }
+
+            // MOVING TO LEFT
             else
             {
                 float xDistance = Mathf.Abs(targetPos.x - myPos.x);
@@ -349,19 +350,40 @@ public class StickBot : MonoBehaviour
                 animator.SetBool(CLOSE_COMBAT, false);
                 animator.SetBool(FACE_TO_FACE, false);
 
+                if (!canAnimate || !grounded) return;   // if can't animate or on air, don't take action
+
                 // If we are approaching
                 if (xDistance < approachDistance)
                 {
                     movement = -movementSpeed / 8;   // Walking / Approaching speed
                     animator.SetBool(CLOSE_COMBAT, true);
 
+                    // Fly Kick Here
+                    if (currentHitDelay < 0 && canFlyKick && Random.Range(0, 10) < flyKickChance)
+                    {
+                        currentHitDelay = hitDelay;     // Reset the hit delay
+                        isFlyKicking = true;
+                    }   
+
 
                     if (xDistance < 2.5f)
                     {
                         movement = 0;    // If we are face-to-face then stop
                         animator.SetBool(FACE_TO_FACE, true);
+
+                        // Kick and Punch here
+                        if (currentHitDelay < 0)
+                        {
+                            currentHitDelay = hitDelay; // Reset the hit delay
+
+                            // Kick or Punch by 50%
+                            if (Random.Range(0, 10) < 5) isKicking = true;
+                            else isPunching = true;
+                        }
                     }
                 }
+
+                if (!canAnimate || !grounded) return;   // if can't animate or on air, don't jump
 
                 // If bot is too close to target, don't even check for jump
                 if (xDistance < 3f) return;
@@ -437,7 +459,7 @@ public class StickBot : MonoBehaviour
         ///  ************************   ///
 
         ///// Move /////
-        animator.SetFloat(SPEED, velocityABS);
+        animator.SetFloat(SPEED, Mathf.Abs(rigidbody.velocity.x));
 
         // Jump
         animator.SetBool(ON_AIR, !grounded);
@@ -512,7 +534,7 @@ public class StickBot : MonoBehaviour
         if (showRangeAndDistance)
         {
             Gizmos.DrawWireSphere(transform.position, followDistance);
-            Gizmos.DrawWireCube(transform.position, new Vector3(maxRange, 3f, 0f));
+            Gizmos.DrawWireCube(transform.position, new Vector3(detectionRange, 3f, 0f));
         }
         
         //Physics2D.OverlapBoxAll(transform.position, new Vector2(maxRange, 5), 0f, enemyLayers);
@@ -717,6 +739,33 @@ public class StickBot : MonoBehaviour
         yield return new WaitForSeconds(10f);
 
         Destroy(gameObject);
+    }
+
+    private void SetTier(int tier)
+    {
+        switch (tier)
+        {
+            case 1:
+                hitDelay = 4f;
+                detectionRange = followDistance = 15f;
+                canFlyKick = false;
+                break;
+            case 2:
+                hitDelay = 3f;
+                detectionRange = followDistance = 30f;
+                canFlyKick = true;
+                flyKickChance = 2;
+                break;
+            case 3:
+                hitDelay = 1f;
+                detectionRange = followDistance = 45f;
+                canFlyKick = true;
+                flyKickChance = 4;
+                break;
+            default:
+                Debug.LogError("Tier undetected for " + gameObject.name);
+                break;
+        }
     }
 
 }
