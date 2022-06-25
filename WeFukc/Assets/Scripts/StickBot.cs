@@ -120,6 +120,9 @@ public class StickBot : MonoBehaviour
 
         patrolStopTime = patrolMaxStopTime;
         patrolChangeTime = patrolMaxChangeTime;
+
+        // Change max speed with a random number to avoid sentetic view of bots when they act together
+        movementSpeed = Random.Range(8f, 15f);
     }
 
 

@@ -134,8 +134,8 @@ public class StickPlayer : MonoBehaviour
 
 
         // Debug Fights
-        if (Input.GetMouseButtonDown(0)) { TakenDamage(PUNCH_RUN, 5, true); }
-        if (Input.GetMouseButtonDown(1)) { TakenDamage(FLYING_KICK, 5, true); }
+        //if (Input.GetMouseButtonDown(0)) { TakenDamage(PUNCH_RUN, 5, true); }
+        //if (Input.GetMouseButtonDown(1)) { TakenDamage(FLYING_KICK, 5, true); }
 
         if (stamina < 100f) stamina += Time.deltaTime * staminaIncrement;  // Increase stamina 1 point every second
         else stamina = 100f;                            // If it exceed 100, set it as 100
@@ -313,7 +313,7 @@ public class StickPlayer : MonoBehaviour
             facingRightInt = -1; // Indicate that we are NO facing right
         }
     }
-    /*
+    
     private void OnDrawGizmos()
     {
         Vector2 drawGismos = new Vector2(turningKickHitLocation.position.x, turningKickHitLocation.position.y);
@@ -324,7 +324,7 @@ public class StickPlayer : MonoBehaviour
         else
             drawGismos = new Vector2(turningKickHitLocation.position.x + 2.6f, turningKickHitLocation.position.y);
         Gizmos.DrawWireSphere(drawGismos, turningKickHitRange); 
-    }*/
+    }
     
     ///  ************************   ///
     ///      Animation Events       ///
@@ -437,6 +437,7 @@ public class StickPlayer : MonoBehaviour
         {
             if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
             else damageFromRight = false;
+
             enemy.GetComponent<StickBot>().TakenDamage(TURNING_KICK, turningKickHitPoint, damageFromRight);
         }
 
