@@ -11,6 +11,10 @@ public class StickBot : MonoBehaviour
     [SerializeField] private StickSensor groundSensor;
     [SerializeField] private StickSensor endUpSensor;
     [SerializeField] private StickSensor endDownSensor;
+    [SerializeField] private StickSensor jumpUpSensor;
+    [SerializeField] private float maxRange = 10f;
+    [SerializeField] private float followDistance = 10f;
+    [SerializeField] private bool showRangeAndDistance = false;
 
     [Header("Specs")]
     [SerializeField] private float maxHealth = 100f;
@@ -68,7 +72,7 @@ public class StickBot : MonoBehaviour
     private bool isJumping = false;
     private bool isDefending = false;
     private bool didKickFront = false;
-    Collider2D[] hitEnemies;
+    private Collider2D[] hitEnemies;
     private bool allowMissSound = true;
     private float missSoundDelay = 1f;
 
@@ -83,16 +87,24 @@ public class StickBot : MonoBehaviour
     private const string DAMAGE_HEAD = "DamageHead";
     private const string DAMAGE_DOWN = "DamageDown";
     private const string KICK_FALL = "KickFall";
+    private const string CHASE = "isChasing";
+    private const string CLOSE_COMBAT = "CloseCombat";
+    private const string FACE_TO_FACE = "FaceToFace";
 
     // Bot vars
     private bool isWalkingRight = false;
     private bool isRunningRight = false;
     private bool isChasing = false;
     private bool isStopped = false;
-    private float patrolMaxChangeTime = 25f;   // Change time 5-25
+
+    private float patrolMaxChangeTime = 20f;   // Change time 5-20
     private float patrolMaxStopTime = 10f;     // Stop time 3-10
     private float patrolChangeTime;   // Change time 5-25
     private float patrolStopTime;     // Stop time 3-10
+
+    private StickPlayer target = null;
+    private Collider2D targetCollider = null;
+    public float approachDistance = 5;
 
 
     private void Start()
@@ -190,96 +202,174 @@ public class StickBot : MonoBehaviour
     }
 
     private void States()
-    {
-        // is chasing?
-            // is needed to jump
-                // Jump
-            // is close combat
-                // Slow Walk
-                    // is inRange?
-                        // Hit
-            // else
-                // Run
-        // Patrol
-            // Slow Walk w/o Guard
-        // isStopped
+    {        
+        if (!isChasing)
+        {   
+            // If we are not chasing, check the range if there is any
+            targetCollider = Physics2D.OverlapBox(transform.position, new Vector2(maxRange, 3), 0f, enemyLayers);
 
+            if (targetCollider != null)
+            {
+                target = targetCollider.GetComponent<StickPlayer>();
+                isChasing = true;
+                animator.SetBool(CHASE, true);
+            }
+            else    // If there no enemy, then patrol
+            {
+                if (isWalkingRight && !isStopped)
+                {
+                    movement = movementSpeed / 8;
 
+                    // Don't check sensors when they are disabled
+                    if (endDownSensor.isSensorDisabled()) return;
+
+                    // If bot comes an edge
+                    if (!endDownSensor.State())
+                    {
+                        ChangePatrolDirection();
+                    }
+                    // if bot comes to a wall
+                    if (endDownSensor.State() && endUpSensor.State())
+                    {
+                        ChangePatrolDirection();
+                    }
+                }
+                else if (!isWalkingRight && !isStopped)
+                {
+                    movement = -movementSpeed / 8;
+
+                    // Don't check sensors when they are disabled
+                    if (endDownSensor.isSensorDisabled()) return;
+
+                    // If bot comes an edge
+                    if (!endDownSensor.State())
+                    {
+                        ChangePatrolDirection();
+                    }
+                    // if bot comes to a wall
+                    if (endDownSensor.State() && endUpSensor.State())
+                    {
+                        ChangePatrolDirection();
+                    }
+                }
+                else if (isStopped) { 
+                    movement = 0;
+
+                    // Check if our stop time is finished
+                    if (patrolStopTime < 0)
+                    {
+                        // Take new change time for actions
+                        patrolChangeTime = Random.Range(5, patrolMaxChangeTime);
+
+                        // Change the direction by 30% chance
+                        if (Random.Range(0f, 10f) < 3)
+                        {
+                            if (isWalkingRight) isWalkingRight = false;
+                            else isWalkingRight = true;
+                        }
+
+                        isStopped = false;
+                    }
+                    else patrolStopTime -= Time.deltaTime; // If not finished, then decrease
+                }
+                else
+                {
+                    // Check if our patrol time is finihed
+                    if (patrolChangeTime < 0)
+                    {
+                        // Take new stop time
+                        patrolStopTime = Random.Range(3, patrolMaxStopTime);
+                        isStopped = true;
+                    }
+                    else patrolChangeTime -= Time.deltaTime; // If not finished, then decrese the time
+                }
+            }
+        }
+        // If we are chasing
         if (isChasing)
         {
+            // if we lost the target then return
+            if (target == null) { isChasing = false; return; }
 
-        }
-
-        // Movement = speeds
-        else if (isWalkingRight && !isStopped)
-        {
-            movement = movementSpeed / 8;
-
-            // Don't check sensors when they are disabled
-            if (endDownSensor.isSensorDisabled()) return;
-
-            // If bot comes an edge
-            if (!endDownSensor.State())
+            // Check if the target is still in range or not
+            float distance = Vector2.Distance(target.transform.position, transform.position);
+            if (distance > followDistance)
             {
-                ChangePatrolDirection();
+                isChasing = false;  // Don't chase
+                animator.SetBool(CHASE, false);
+                return;             // Don't execute below code
             }
-            // if bot comes to a wall
-            if (endDownSensor.State() && endUpSensor.State())
+
+            // Check the direction
+            Vector2 targetPos = target.transform.position;
+            Vector2 myPos = transform.position;
+
+            if (targetPos.x > myPos.x) // If target is on the right
             {
-                ChangePatrolDirection();
-            }
-        }
-        else if (!isWalkingRight && !isStopped)
-        {
-            movement = -movementSpeed / 8;
+                // Set speed according to distance
+                float xDistance = Mathf.Abs(targetPos.x - myPos.x);
 
-            // Don't check sensors when they are disabled
-            if (endDownSensor.isSensorDisabled()) return;
+                movement = movementSpeed; // Normal Chasing speed
+                animator.SetBool(CLOSE_COMBAT, false);
+                animator.SetBool(FACE_TO_FACE, false);
 
-            // If bot comes an edge
-            if (!endDownSensor.State())
-            {
-                ChangePatrolDirection();
-            }
-            // if bot comes to a wall
-            if (endDownSensor.State() && endUpSensor.State())
-            {
-                ChangePatrolDirection();
-            }
-        }
-
-        else if (isStopped) { movement = 0; }
-
-        // Patrol State Change - Making a natural patrolling
-        if (!isChasing)
-        {
-            if (isStopped)
-            {   // Check if our stop time is finished
-                if (patrolStopTime < 0)
+                // If we are approaching
+                if (xDistance < approachDistance)
                 {
-                    // Take new change time for actions
-                    patrolChangeTime = Random.Range(5, patrolMaxChangeTime);
+                    movement = movementSpeed / 8;   // Walking / Approaching speed
+                    animator.SetBool(CLOSE_COMBAT, true);
 
-                    // Change the direction by 30% chance
-                    if (Random.Range(0f, 10f) < 3)
+
+                    if (xDistance < 2.5f)
                     {
-                        if (isWalkingRight) isWalkingRight = false;
-                        else isWalkingRight = true;
+                        movement = 0;    // If we are face-to-face then stop
+                        animator.SetBool(FACE_TO_FACE, true);
                     }
+                }
 
-                    isStopped = false;
-                }
-                else patrolStopTime -= Time.deltaTime; // If not finished, then decrease
-            }
-            else  // if we are on move
-            {   // Check if our patrol time is finihed
-                if (patrolChangeTime < 0)
+                // If bot is too close to target, don't even check for jump
+                if (xDistance < 3f) return;
+
+                // Check if jump needed
+                if ((((targetPos.y - myPos.y) > 5) && jumpUpSensor.State() && grounded)         // Needed for up?
+                    || (!jumpUpSensor.State() && endDownSensor.State() && endUpSensor.State() && grounded) // need to follow but faced with obstacle. 
+                    || (((targetPos.y - myPos.y) < -5) && !endDownSensor.State() && grounded))  // or down?
                 {
-                    // Take new stop time
-                    patrolStopTime = Random.Range(3, patrolMaxStopTime);
-                    isStopped = true;
+                    isJumping = true;
                 }
-                else patrolChangeTime -= Time.deltaTime; // If not finished, then decrese the time
+            }
+            else
+            {
+                float xDistance = Mathf.Abs(targetPos.x - myPos.x);
+
+                movement = -movementSpeed; // Normal Chasing speed
+                animator.SetBool(CLOSE_COMBAT, false);
+                animator.SetBool(FACE_TO_FACE, false);
+
+                // If we are approaching
+                if (xDistance < approachDistance)
+                {
+                    movement = -movementSpeed / 8;   // Walking / Approaching speed
+                    animator.SetBool(CLOSE_COMBAT, true);
+
+
+                    if (xDistance < 2.5f)
+                    {
+                        movement = 0;    // If we are face-to-face then stop
+                        animator.SetBool(FACE_TO_FACE, true);
+                    }
+                }
+
+                // If bot is too close to target, don't even check for jump
+                if (xDistance < 3f) return;
+
+                // Check if jump needed
+                if ((((targetPos.y - myPos.y) > 5) && jumpUpSensor.State() && grounded)         // Needed for up?                    
+                    || (!jumpUpSensor.State() && endDownSensor.State() && endUpSensor.State() && grounded) // need to follow but faced with obstacle. 
+                    || (((targetPos.y - myPos.y) < -5) && !endDownSensor.State() && grounded))  // or down?
+                {
+                    isJumping = true;
+                }
             }
         }
     }
@@ -302,6 +392,7 @@ public class StickBot : MonoBehaviour
         // Get new patrol time because we have turned into a new direction
         patrolChangeTime = Random.Range(5, patrolMaxChangeTime);
     }
+
 
     private void Actions()
     {
@@ -411,18 +502,18 @@ public class StickBot : MonoBehaviour
             facingRightInt = -1; // Indicate that we are NO facing right
         }
     }
-    /*
+    
     private void OnDrawGizmos()
     {
-        Vector2 drawGismos = new Vector2(turningKickHitLocation.position.x, turningKickHitLocation.position.y);
-        Gizmos.DrawWireSphere(drawGismos, turningKickHitRange);
-
-        if (facingRightInt > 0) 
-            drawGismos = new Vector2(turningKickHitLocation.position.x - 2.6f, turningKickHitLocation.position.y);
-        else
-            drawGismos = new Vector2(turningKickHitLocation.position.x + 2.6f, turningKickHitLocation.position.y);
-        Gizmos.DrawWireSphere(drawGismos, turningKickHitRange); 
-    }*/
+        //Vector2 drawGismos = new Vector2(turningKickHitLocation.position.x, turningKickHitLocation.position.y);
+        if (showRangeAndDistance)
+        {
+            Gizmos.DrawWireSphere(transform.position, followDistance);
+            Gizmos.DrawWireCube(transform.position, new Vector3(maxRange, 3f, 0f));
+        }
+        
+        //Physics2D.OverlapBoxAll(transform.position, new Vector2(maxRange, 5), 0f, enemyLayers);
+    }
 
     ///  ************************   ///
     ///      Animation Events       ///
@@ -438,7 +529,7 @@ public class StickBot : MonoBehaviour
         {
             if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
             else damageFromRight = false;
-            enemy.GetComponent<StickBot>().TakenDamage(PUNCH_HIT, punchHitPoint, damageFromRight);
+            enemy.GetComponent<StickPlayer>().TakenDamage(PUNCH_HIT, punchHitPoint, damageFromRight);
         }
 
         if (hitEnemies.Length < 1) FindObjectOfType<AudioManager>().PlaySFX("Attack_Miss");
@@ -454,7 +545,7 @@ public class StickBot : MonoBehaviour
         {
             if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
             else damageFromRight = false;
-            enemy.GetComponent<StickBot>().TakenDamage(PUNCH_RUN, punchRunHitPoint, damageFromRight);
+            enemy.GetComponent<StickPlayer>().TakenDamage(PUNCH_RUN, punchRunHitPoint, damageFromRight);
         }
 
         // Flygin Kick and running punch has allowAttackSound restriction to avoid multiple sounds in one shot
@@ -475,7 +566,7 @@ public class StickBot : MonoBehaviour
         {
             if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
             else damageFromRight = false;
-            enemy.GetComponent<StickBot>().TakenDamage(KICK, kickHitPoint, damageFromRight);
+            enemy.GetComponent<StickPlayer>().TakenDamage(KICK, kickHitPoint, damageFromRight);
         }
 
         if (hitEnemies.Length < 1) FindObjectOfType<AudioManager>().PlaySFX("Attack_Miss");
@@ -491,7 +582,7 @@ public class StickBot : MonoBehaviour
         {
             if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
             else damageFromRight = false;
-            enemy.GetComponent<StickBot>().TakenDamage(FLYING_KICK, flyingKickHitPoint, damageFromRight);
+            enemy.GetComponent<StickPlayer>().TakenDamage(FLYING_KICK, flyingKickHitPoint, damageFromRight);
         }
 
         // Flygin Kick and running punch has allowAttackSound restriction to avoid multiple sounds in one shot
@@ -535,7 +626,7 @@ public class StickBot : MonoBehaviour
         {
             if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
             else damageFromRight = false;
-            enemy.GetComponent<StickBot>().TakenDamage(TURNING_KICK, turningKickHitPoint, damageFromRight);
+            enemy.GetComponent<StickPlayer>().TakenDamage(TURNING_KICK, turningKickHitPoint, damageFromRight);
         }
 
         if (hitEnemies.Length < 1) FindObjectOfType<AudioManager>().PlaySFX("Attack_Miss");
