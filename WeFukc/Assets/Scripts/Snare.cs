@@ -9,8 +9,11 @@ public class Snare : MonoBehaviour
 
 
     // General
+    public float maxWaitTime = 15f;
+    private float minWaitTime = 5f;
+    private float currentWaitTime = 5f;
     private bool isPerforming = false;
-    [SerializeField] private bool actionTest = false;
+    [SerializeField] private bool snareActivated = false;
 
     // Damage Types
     private const string SNARE_HEAD = "SnareHead";
@@ -26,11 +29,11 @@ public class Snare : MonoBehaviour
     [SerializeField] private bool bladeSnare = false;
 
     // Turning Blade Snare
-    [Header("Turning Blade")]
-    [SerializeField] private float turningBlade_Range = 5f;
-    [SerializeField] private float turningBlade_MoveSpeed = 5f;
-    [SerializeField] private float turningBlade_MinSpawnTime = 10f;
-    [SerializeField] private float turningBlade_MaxSpawnTime = 60f;
+    public float turningBlade_Range = 5f;
+    public float turningBlade_MoveSpeed = 5f;
+    public float turningBlade_MaxSpawnTimeIndex = 3f;
+    private float turningBlade_MinSpawnTime = 10f;
+    private float turningBlade_SpawnTime = 10f;
     private bool isTurningBladeMoving = false;
     private bool upComplete = false;
     private SpriteRenderer turningBladesprite;
@@ -38,7 +41,6 @@ public class Snare : MonoBehaviour
     // Bottom Snare
     private bool bottomSnare_isMovingUp = false;
     private bool bottomSnare_upDone = false;
-    private float bottomSnare_waitTime = 2f;
 
     // Stone Snare
     private bool didHit = false;
@@ -50,23 +52,10 @@ public class Snare : MonoBehaviour
     // Chain Blade
     private bool chainBlade_movingUp = false;
     private bool chainBlade_upDone = false;
-    private float chainBlade_waitTime = 2f;
     private SpriteRenderer chainBladeSprite;
 
 
     /* Snare Information
-     * 
-     * Chain Snare
-     * --- Randomize the action timing
-     * --- Start and stop animator play back
-     * - Its place is know.
-     * 
-     * Turning Blade
-     * - Set min and max spawn time
-     * 
-     * 
-     * 
-     * - 
      * 
      * Standards
      * - Have isPerforming to avoid neccessary execution
@@ -82,19 +71,25 @@ public class Snare : MonoBehaviour
 
     void Start()
     {
-        if (bottomSnare || bladeSnare)
-        {
-            bottomSnare_waitTime = Random.Range(2f, 6f);
-        }
-        else if (turningBladeSnare)
+        if (turningBladeSnare)
         {
             turningBladesprite = GetComponentInChildren<SpriteRenderer>();  // Get the sprite to rotate
+
+            // Get new spawn time
+            turningBlade_MinSpawnTime = (turningBlade_Range / turningBlade_MoveSpeed) + 5f;
+            turningBlade_SpawnTime = Random.Range(turningBlade_MinSpawnTime, turningBlade_MinSpawnTime * turningBlade_MaxSpawnTimeIndex);
+
         }
         else if (chainBladeSnare)
         {
             chainBladeSprite = GetComponentInChildren<SpriteRenderer>();  // Get the sprite to rotate
-            chainBlade_waitTime = Random.Range(0.5f, 5f);
         }
+        else if (stoneSnare)
+        {
+            transform.localPosition = new Vector2(0f, 20f); // Place the stone in a high space
+        }
+
+        currentWaitTime = Random.Range(minWaitTime, maxWaitTime);
     }
 
 
@@ -170,13 +165,17 @@ public class Snare : MonoBehaviour
 
     private void BottomSnareActions()
     {
-        if (actionTest)
+        if (snareActivated || currentWaitTime < 0f)
         {
-            actionTest = false;
+            snareActivated = false;
             didHit = false;         // we can hit again
             bottomSnare_isMovingUp = true;
             isPerforming = true;
+
+            // Get new wait time
+            currentWaitTime = Random.Range(minWaitTime, maxWaitTime);
         }
+        else currentWaitTime -= Time.deltaTime;
 
         if (!isPerforming) return; // Don't execute any code below if we are not assigned to perform
 
@@ -197,11 +196,11 @@ public class Snare : MonoBehaviour
         else if (bottomSnare_upDone)
         {
             // wait
-            bottomSnare_waitTime -= Time.deltaTime;
+            currentWaitTime -= Time.deltaTime;
 
             // If time is done
-            if (bottomSnare_waitTime < 0) { 
-                bottomSnare_waitTime = Random.Range(2f, 6f);    // Reset the time
+            if (currentWaitTime < 0) { 
+                currentWaitTime = Random.Range(2f, 6f);    // Reset the time
                 bottomSnare_upDone = false;                     // Move on to next step
             }
         }
@@ -220,13 +219,18 @@ public class Snare : MonoBehaviour
 
     private void TurningBladeActions()
     {
-        if (actionTest)    // Change this later with Level Manager
+        if (snareActivated || turningBlade_SpawnTime < 0f)    // Change this later with Level Manager
         {
-            actionTest = false;
+            snareActivated = false;
             didHit = false;         // we can hit again
             isTurningBladeMoving = true;
             isPerforming = true;
+
+            // Get new spawn time
+            turningBlade_MinSpawnTime = (turningBlade_Range / turningBlade_MoveSpeed) + 5f;
+            turningBlade_SpawnTime = Random.Range(turningBlade_MinSpawnTime, turningBlade_MinSpawnTime * turningBlade_MaxSpawnTimeIndex);
         }
+        else turningBlade_SpawnTime -= Time.deltaTime;
 
         if (!isPerforming) return;      // Don't execute any code below if we are not assigned to perform
 
@@ -303,13 +307,16 @@ public class Snare : MonoBehaviour
 
     private void ChainBladeActions()
     {
-        if (actionTest)
+        if (snareActivated || currentWaitTime < 0f)
         {
-            actionTest = false;
+            snareActivated = false;
             didHit = false;         // we can hit again
             chainBlade_movingUp = true;
             isPerforming = true;
+
+            currentWaitTime = Random.Range(minWaitTime, maxWaitTime);   // Set a new action time
         }
+        else currentWaitTime -= Time.deltaTime;
 
         if (!isPerforming) return; // Don't execute any code below if we are not assigned to perform
 
@@ -333,12 +340,12 @@ public class Snare : MonoBehaviour
         else if (chainBlade_upDone)
         {
             // wait
-            chainBlade_waitTime -= Time.deltaTime;
+            currentWaitTime -= Time.deltaTime;
 
             // If time is done
-            if (chainBlade_waitTime < 0)
+            if (currentWaitTime < 0)
             {
-                chainBlade_waitTime = Random.Range(0.5f, 5f);  // Reset the time
+                currentWaitTime = Random.Range(0.5f, 5f);  // Reset the time
                 chainBlade_upDone = false;                     // Move on to next step
                 didHit = false;                                 // we can hit again
             }
@@ -358,14 +365,18 @@ public class Snare : MonoBehaviour
 
     private void BladeSnareActions()
     {
-        if (actionTest)
+        if (snareActivated || currentWaitTime < 0f)
         {
-            actionTest = false;
+            snareActivated = false;
             didHit = false;         // we can hit again
             blade_movingDown = true;
             isPerforming = true;
+
+            // Get new wait time
+            currentWaitTime = Random.Range(minWaitTime, maxWaitTime);
         }
-        
+        else currentWaitTime -= Time.deltaTime;
+
         if (!isPerforming) return; // Don't execute any code below if we are not assigned to perform
 
         float yPos = transform.localPosition.y;
@@ -385,12 +396,12 @@ public class Snare : MonoBehaviour
         else if (balde_downDone)
         {
             // wait - same as bottom snares
-            bottomSnare_waitTime -= Time.deltaTime;
+            currentWaitTime -= Time.deltaTime;
 
             // If time is done
-            if (bottomSnare_waitTime < 0)
+            if (currentWaitTime < 0)
             {
-                bottomSnare_waitTime = Random.Range(5f, 6f);    // Reset the time
+                currentWaitTime = Random.Range(5f, 6f);    // Reset the time
                 balde_downDone = false;                     // Move on to next step
             }
         }
@@ -414,6 +425,5 @@ public class Snare : MonoBehaviour
 
         Destroy(gameObject);
     }
-
 
 }
