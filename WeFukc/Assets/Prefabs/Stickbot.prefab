@@ -45,9 +45,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbafb5a4e011ec743890684f16ebba6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceptedLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!58 &985566830
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -109,9 +106,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbafb5a4e011ec743890684f16ebba6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceptedLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!61 &1551771624
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -183,9 +177,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbafb5a4e011ec743890684f16ebba6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceptedLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!58 &1594935558
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -882,9 +873,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbafb5a4e011ec743890684f16ebba6d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  acceptedLayer:
-    serializedVersion: 2
-    m_Bits: 128
 --- !u!58 &4049432496515810834
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -2917,20 +2905,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aafe7d4b36565c43be873eb0dfdc596, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 10
-  jumpForce: 30
-  flyingKickForce: 15
-  flyingKickUp: 15
   groundSensor: {fileID: 4049432496515810833}
   endUpSensor: {fileID: 1594935559}
   endDownSensor: {fileID: 985566831}
   jumpUpSensor: {fileID: 1551771623}
-  maxHealth: 100
-  punchHitPoint: 5
-  punchRunHitPoint: 5
-  kickHitPoint: 5
-  flyingKickHitPoint: 5
-  turningKickHitPoint: 5
   characterCollider: {fileID: 4049432498126308303}
   deadBody: {fileID: 4049432497724673804}
   deadBody_Head: {fileID: 4049432496325093408}
@@ -2943,17 +2921,11 @@ MonoBehaviour:
   kickHitLocation: {fileID: 4049432496672481573}
   flyingKickHitLocation: {fileID: 4049432496672481573}
   turningKickHitLocation: {fileID: 4049432496672481573}
-  punchHitRange: 1
-  kickHitRange: 0.8
-  flyingKickHitRange: 1
-  turningKickHitRange: 2
   enemyLayers:
     serializedVersion: 2
     m_Bits: 8
-  takenPunchMove: 1
-  takenKickMove: 5
   approachDistance: 5
   detectionRange: 15
-  followDistance: 15
-  showRangeAndDistance: 1
+  followDistance: 30
+  showRangeAndDistance: 0
   botTier: 2

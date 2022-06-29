@@ -124,3 +124,38 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     source: {fileID: 0}
+  - name: Jump
+    clip: {fileID: 8300000, guid: 3a88fb6ed6afbdd42aee61abd5c6369f, type: 3}
+    loop: 0
+    playOnAwake: 0
+    volume: 0.3
+    pitch: 1
+    source: {fileID: 0}
+  - name: Attack_Effort
+    clip: {fileID: 8300000, guid: a0665f3f40af29f4b9365d1c92b55c17, type: 3}
+    loop: 0
+    playOnAwake: 0
+    volume: 0.5
+    pitch: 1
+    source: {fileID: 0}
+  - name: Little_Pain
+    clip: {fileID: 8300000, guid: 894e0d99302bbde4b81755abf6a1055a, type: 3}
+    loop: 0
+    playOnAwake: 0
+    volume: 0.5
+    pitch: 1
+    source: {fileID: 0}
+  - name: Big_Pain
+    clip: {fileID: 8300000, guid: 0d5c602674e888540bba2762a381bde0, type: 3}
+    loop: 0
+    playOnAwake: 0
+    volume: 0.7
+    pitch: 1
+    source: {fileID: 0}
+  - name: Death
+    clip: {fileID: 8300000, guid: 7f2f6059b1ccb2d4282d7a0ab437d03a, type: 3}
+    loop: 0
+    playOnAwake: 0
+    volume: 0.8
+    pitch: 1
+    source: {fileID: 0}

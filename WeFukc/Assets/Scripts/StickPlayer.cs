@@ -87,7 +87,10 @@ public class StickPlayer : MonoBehaviour
     private const string DEFENDING = "Defending"; 
     private const string DAMAGE_HEAD = "DamageHead"; 
     private const string DAMAGE_DOWN = "DamageDown"; 
-    private const string KICK_FALL = "KickFall"; 
+    private const string KICK_FALL = "KickFall";
+    private const string SNARE_HEAD = "SnareHead";
+    private const string SNARE_DOWN = "SnareDown";
+    private const string SNARE_BIG = "SnareBig";
 
 
     private void Start()
@@ -228,6 +231,7 @@ public class StickPlayer : MonoBehaviour
             rigidbody.velocity = new Vector2(rigidbody.velocity.x, jumpForce);
             groundSensor.Disable(0.2f);
             stamina -= staminaJump;
+            FindObjectOfType<AudioManager>().PlaySFX("Jump");
         }
 
 
@@ -250,6 +254,8 @@ public class StickPlayer : MonoBehaviour
             isRunPunching = false;
 
             stamina -= punchRunHitPoint;
+
+            FindObjectOfType<AudioManager>().PlaySFX("Attack_Effort");
         }
         if (isPunching)
         {
@@ -261,6 +267,8 @@ public class StickPlayer : MonoBehaviour
 
             // Make player stop to avoid unwanted moves
             rigidbody.velocity = new Vector2(0, rigidbody.velocity.y);
+
+            FindObjectOfType<AudioManager>().PlaySFX("Attack_Effort");
         }
         // Kicking //
         if (isFlyKicking)
@@ -275,6 +283,8 @@ public class StickPlayer : MonoBehaviour
 
             isFlyKicking = false;
             canAnimate = false;
+
+            FindObjectOfType<AudioManager>().PlaySFX("Jump");
         }
         if (isKicking)
         {
@@ -283,6 +293,8 @@ public class StickPlayer : MonoBehaviour
             canAnimate = false;
 
             stamina -= kickHitPoint;
+
+            FindObjectOfType<AudioManager>().PlaySFX("Attack_Effort");
         }
         if (isTurningKicking)
         {
@@ -294,6 +306,8 @@ public class StickPlayer : MonoBehaviour
 
             isTurningKicking = false;
             canAnimate = false;
+
+            FindObjectOfType<AudioManager>().PlaySFX("Jump");
         }
         #endregion
 
@@ -314,7 +328,7 @@ public class StickPlayer : MonoBehaviour
             facingRightInt = -1; // Indicate that we are NO facing right
         }
     }
-    
+    /*
     private void OnDrawGizmos()
     {
         Vector2 drawGismos = new Vector2(turningKickHitLocation.position.x, turningKickHitLocation.position.y);
@@ -326,7 +340,7 @@ public class StickPlayer : MonoBehaviour
             drawGismos = new Vector2(turningKickHitLocation.position.x + 2.6f, turningKickHitLocation.position.y);
         Gizmos.DrawWireSphere(drawGismos, turningKickHitRange); 
     }
-    
+    */
     ///  ************************   ///
     ///      Animation Events       ///
     ///  ************************   ///
@@ -394,7 +408,7 @@ public class StickPlayer : MonoBehaviour
         {
             if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
             else damageFromRight = false;
-            enemy.GetComponent<StickBot>().TakenDamage(FLYING_KICK, flyingKickHitPoint, damageFromRight);
+            if (enemy) enemy.GetComponent<StickBot>().TakenDamage(FLYING_KICK, flyingKickHitPoint, damageFromRight);
         }
 
         // Flygin Kick and running punch has allowAttackSound restriction to avoid multiple sounds in one shot
@@ -439,7 +453,7 @@ public class StickPlayer : MonoBehaviour
             if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
             else damageFromRight = false;
 
-            enemy.GetComponent<StickBot>().TakenDamage(TURNING_KICK, turningKickHitPoint, damageFromRight);
+            if (enemy) enemy.GetComponent<StickBot>().TakenDamage(TURNING_KICK, turningKickHitPoint, damageFromRight);
         }
 
         if (hitEnemies.Length < 1) FindObjectOfType<AudioManager>().PlaySFX("Attack_Miss");
@@ -480,12 +494,15 @@ public class StickPlayer : MonoBehaviour
         if (!_DamageDirection && facingRightInt != -1) FlipCharacter(false);
 
         // Animate
-        if (_takenDamageType == PUNCH_HIT || _takenDamageType == PUNCH_RUN) animator.SetTrigger(DAMAGE_HEAD);
-        else if (_takenDamageType == FLYING_KICK ||_takenDamageType == TURNING_KICK) animator.SetTrigger(KICK_FALL);
+        if (_takenDamageType == PUNCH_HIT || _takenDamageType == PUNCH_RUN ||_takenDamageType == SNARE_HEAD) animator.SetTrigger(DAMAGE_HEAD);
+        else if (_takenDamageType == FLYING_KICK ||_takenDamageType == TURNING_KICK || _takenDamageType == SNARE_BIG) animator.SetTrigger(KICK_FALL);
         else animator.SetTrigger(DAMAGE_DOWN);
 
         // Make attack sound (even though we got attacked, we make it)
-        FindObjectOfType<AudioManager>().PlayAttackSound();
+        if (_takenDamageType == SNARE_BIG) { FindObjectOfType<AudioManager>().PlaySFX("Big_Pain"); }
+        else if (_takenDamageType == SNARE_HEAD || _takenDamageType == SNARE_DOWN) { FindObjectOfType<AudioManager>().PlaySFX("Little_Pain"); }
+        else { FindObjectOfType<AudioManager>().PlayAttackSound(); FindObjectOfType<AudioManager>().PlaySFX("Little_Pain"); }
+
 
         // Move away according to hit type
         if (_takenDamageType == PUNCH_RUN) 
@@ -524,7 +541,7 @@ public class StickPlayer : MonoBehaviour
 
     IEnumerator DestroyLater()
     {
-        // Place death SFX here
+        FindObjectOfType<AudioManager>().PlaySFX("Death");
 
         yield return new WaitForSeconds(10f);
 

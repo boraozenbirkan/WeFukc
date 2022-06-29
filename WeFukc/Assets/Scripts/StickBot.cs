@@ -4,22 +4,21 @@ using System.Collections;
 public class StickBot : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float movementSpeed = 20f;
-    [SerializeField] private float jumpForce = 20f;
-    [SerializeField] private float flyingKickForce = 5f;
-    [SerializeField] private float flyingKickUp = 5f;
+    private float movementSpeed = 10f;
+    private float jumpForce = 30f;
+    private float flyingKickForce = 15f;
+    private float flyingKickUp = 15f;
     [SerializeField] private StickSensor groundSensor;
     [SerializeField] private StickSensor endUpSensor;
     [SerializeField] private StickSensor endDownSensor;
     [SerializeField] private StickSensor jumpUpSensor;
 
-    [Header("Specs")]
-    [SerializeField] private float maxHealth = 100f;
-    [SerializeField] private float punchHitPoint = 5f;
-    [SerializeField] private float punchRunHitPoint = 10f;
-    [SerializeField] private float kickHitPoint = 5f;
-    [SerializeField] private float flyingKickHitPoint = 15f;
-    [SerializeField] private float turningKickHitPoint = 25f;
+    private float maxHealth = 100f;
+    private float punchHitPoint = 5f;
+    private float punchRunHitPoint = 10f;
+    private float kickHitPoint = 5f;
+    private float flyingKickHitPoint = 15f;
+    private float turningKickHitPoint = 25f;
 
     [Header("Death Components")]
     [SerializeField] private BoxCollider2D characterCollider;
@@ -33,13 +32,13 @@ public class StickBot : MonoBehaviour
     [SerializeField] private Transform kickHitLocation;
     [SerializeField] private Transform flyingKickHitLocation;
     [SerializeField] private Transform turningKickHitLocation;
-    [SerializeField] private float punchHitRange = 1f;
-    [SerializeField] private float kickHitRange = 0.8f;
-    [SerializeField] private float flyingKickHitRange = 1f;
-    [SerializeField] private float turningKickHitRange = 1f;
+    private float punchHitRange = 1f;
+    private float kickHitRange = 0.8f;
+    private float flyingKickHitRange = 1f;
+    private float turningKickHitRange = 2f;
     [SerializeField] private LayerMask enemyLayers;
-    [SerializeField] private float takenPunchMove = 3f;
-    [SerializeField] private float takenKickMove = 6f;
+    private float takenPunchMove = 2f;
+    private float takenKickMove = 5f;
 
     // Other game objects and components
     private Animator animator;
@@ -104,8 +103,8 @@ public class StickBot : MonoBehaviour
     private float currentHitDelay;
     private bool canFlyKick = false;
     private int flyKickChance = 2;
-    [SerializeField] private float detectionRange = 10f;
-    [SerializeField] private float followDistance = 10f;
+    [SerializeField] private float detectionRange = 15f;
+    [SerializeField] private float followDistance = 30f;
     [SerializeField] private bool showRangeAndDistance = false;
     [SerializeField] [Range(1, 15)] private int botTier = 1;
 
@@ -274,12 +273,14 @@ public class StickBot : MonoBehaviour
                 return;             // Don't execute below code
             }
 
+
             // Decrease hit delay
             currentHitDelay -= Time.deltaTime;
 
             // Check the direction
             Vector2 targetPos = target.transform.position;
             Vector2 myPos = transform.position;
+
 
 
             // MOVING TO RIGHT
@@ -513,7 +514,10 @@ public class StickBot : MonoBehaviour
 
     }
 
-    private void toggleCanAnimate() { canAnimate = !canAnimate; }
+    private void toggleCanAnimate() { 
+        canAnimate = !canAnimate;
+        currentHitDelay += 1f; // Add a small delay after completing an action
+    }
     private void FlipCharacter(bool flipRight)
     {
         if (flipRight)
@@ -607,7 +611,7 @@ public class StickBot : MonoBehaviour
         {
             if ((transform.position.x - enemy.transform.position.x) > 0) damageFromRight = true;
             else damageFromRight = false;
-            enemy.GetComponent<StickPlayer>().TakenDamage(FLYING_KICK, flyingKickHitPoint, damageFromRight);
+            if (enemy) enemy.GetComponent<StickPlayer>().TakenDamage(FLYING_KICK, flyingKickHitPoint, damageFromRight);
         }
 
         // Flygin Kick and running punch has allowAttackSound restriction to avoid multiple sounds in one shot
