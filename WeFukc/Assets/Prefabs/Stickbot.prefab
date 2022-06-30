@@ -2928,4 +2928,4 @@ MonoBehaviour:
   detectionRange: 15
   followDistance: 30
   showRangeAndDistance: 0
-  botTier: 2
+  botTier: 1

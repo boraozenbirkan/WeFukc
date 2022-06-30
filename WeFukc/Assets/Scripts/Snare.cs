@@ -266,6 +266,7 @@ public class Snare : MonoBehaviour
             // Going Left
             else if (turningBlade_Range < 0f && xPos > turningBlade_Range)
             {
+                // Rise if needed
                 if (yPos < 3f && !upComplete)
                 {
                     transform.Translate(Vector2.up * turningBlade_MoveSpeed * Time.deltaTime);

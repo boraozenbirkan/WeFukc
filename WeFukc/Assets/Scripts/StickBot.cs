@@ -127,7 +127,6 @@ public class StickBot : MonoBehaviour
 
         // Change max speed with a random number to avoid sentetic view of bots when they act together
         movementSpeed = Random.Range(8f, 15f);
-        SetTier(botTier);   // Set bot's specs
     }
 
 
@@ -745,22 +744,28 @@ public class StickBot : MonoBehaviour
         Destroy(gameObject);
     }
 
-    private void SetTier(int tier)
+    public void SetTier(int tier)
     {
         switch (tier)
         {
             case 1:
+                botTier = 1;
+                maxHealth = 30f;
                 hitDelay = 4f;
                 detectionRange = followDistance = 15f;
                 canFlyKick = false;
                 break;
             case 2:
+                botTier = 2;
+                maxHealth = 60f;
                 hitDelay = 3f;
                 detectionRange = followDistance = 30f;
                 canFlyKick = true;
                 flyKickChance = 2;
                 break;
             case 3:
+                botTier = 3;
+                maxHealth = 90f;
                 hitDelay = 1f;
                 detectionRange = followDistance = 45f;
                 canFlyKick = true;

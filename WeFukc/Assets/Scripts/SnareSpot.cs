@@ -55,14 +55,12 @@ public class SnareSpot : MonoBehaviour
         // If player is not present, try to find, if can't find, then return.
         if (player == null)
         {
-            Debug.Log("I don't have player");
             player = FindObjectOfType<StickPlayer>();
 
             return;
         }
         if (snare == null)
         {
-            Debug.Log("I don't have the snare");
             snare = GetComponentInChildren<Snare>();
 
             // turn snares off to increase performance
@@ -76,7 +74,6 @@ public class SnareSpot : MonoBehaviour
 
         // If player is present, check the distance
         playerDistance = Vector2.Distance(player.transform.position, transform.position);
-        //Debug.Log("playerDistance: " + playerDistance);
 
         // If close enough, then activate the snare
         if (snare != null && playerDistance < snareActivationDistance)
@@ -99,5 +96,5 @@ public class SnareSpot : MonoBehaviour
     }
 
     public void SetActivationDistance(float _newActivationDistance) { snareActivationDistance = _newActivationDistance; }
-
+    public void AssignSnare(bool _snareAssigned) { isSnareAssigned = _snareAssigned; }
 }

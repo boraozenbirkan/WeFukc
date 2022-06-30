@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class LevelGenerator : MonoBehaviour
 {
@@ -14,39 +15,9 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private Snare bladeSnare;
     [SerializeField] private Snare stoneSnare;
 
-    #region Paths
-    [Header("Path 1")]
-    [SerializeField] private SnareSpot[] pathOneTurningBladeSpots;
-    [SerializeField] private SnareSpot[] pathOneChainBladeSpots;
-    [SerializeField] private SnareSpot[] pathOneBottomSpots;
-    [SerializeField] private SnareSpot[] pathOneStoneSpots;
-    [SerializeField] private SnareSpot[] pathOneBladeSpots;
-    [SerializeField] private Transform[] pathOneBotSpots;
-
-    [Header("Path 2")]
-    [SerializeField] private SnareSpot[] pathTwoTurningBladeSpots;
-    [SerializeField] private SnareSpot[] pathTwoChainBladeSpots;
-    [SerializeField] private SnareSpot[] pathTwoBottomSpots;
-    [SerializeField] private SnareSpot[] pathTwoStoneSpots;
-    [SerializeField] private SnareSpot[] pathTwoBladeSpots;
-    [SerializeField] private Transform[] pathTwoBotSpots;
-
-    [Header("Path 3")]
-    [SerializeField] private SnareSpot[] pathThreeTurningBladeSpots;
-    [SerializeField] private SnareSpot[] pathThreeChainBladeSpots;
-    [SerializeField] private SnareSpot[] pathThreeBottomSpots;
-    [SerializeField] private SnareSpot[] pathThreeStoneSpots;
-    [SerializeField] private SnareSpot[] pathThreeBladeSpots;
-    [SerializeField] private Transform[] pathThreeBotSpots;
-
-    [Header("Default Path")]
-    [SerializeField] private SnareSpot[] pathDefaultTurningBladeSpots;
-    [SerializeField] private SnareSpot[] pathDefaultChainBladeSpots;
-    [SerializeField] private SnareSpot[] pathDefaultBottomSpots;
-    [SerializeField] private SnareSpot[] pathDefaultStoneSpots;
-    [SerializeField] private SnareSpot[] pathDefaultBladeSpots;
-    [SerializeField] private Transform[] pathDefaultBotSpots;
-    #endregion
+    // Each path element has spots as a game object. Bot spots have transform as spot.
+    // Snare Spots have Snare object as spot except the chain snare. It has GameObject, then under it, Snare
+    [SerializeField] private Path[] paths;
 
     /* Snare TODOs
      * 
@@ -66,21 +37,16 @@ public class LevelGenerator : MonoBehaviour
      * Chain Snare
      * - The snare is inside of the gameObject. Reach it by GetComponentInChildren
      * 
-     */
-
-
-    /* BOT TODOs
      * 
-     * Set Bot's tier and they will set the remeaning features themselves
-     * The name of the bot spot is the intensity level. 
+     * Difficulty Difference when spawn a snare - These percentages differs according to number of possible spots
+     * -- For instance, bottom snare have lots of spots to spawn. Therefore, they have less percentage to spawn
      * 
-     * Bot Intensities Levels (number of bots)
-     * 1: 1 
-     * 2: 1 - 3   
-     * 3: 3 - 6
-     * 4: 6 - 9
-     * 5: 9 - 12
-     * 
+     * Bots: 10-20-30%              Place them in every 10 units
+     * Bottom: 10-20-30%            10 units
+     * Turning Blade: 20-40-60%     
+     * Chain Balde: 10-20-30%       10 units
+     * Blade: 20-40-60%             at least 20 units 
+     * Stone: 10-20-30%             10 units
      * 
      */
 
@@ -110,60 +76,196 @@ public class LevelGenerator : MonoBehaviour
      */
 
 
-    /* Algorithm
-     * 
-     *  /- Assign Path Difficulties
-     *  /- Spawn Bots
-     *  /- Spawn Snares
-     * 
-     */
 
-    private int pathOneDiff = 0;
-    private int pathTwoDiff = 0;
-    private int pathThreeDiff = 0;
 
     void Start()
     {
-        // ** Assign Paths ** //
-        #region
+        // Assign Paths
+        AssignDifficulties();
+
+        // DEBUG: Set the path difficulties automatically
+        paths[2].pathDifficulty = 1; paths[3].pathDifficulty = 2; paths[4].pathDifficulty = 3;
+        
+        // 1. path is the default, 2-3-4. paths are normal paths | First index is empty due to Unity's bug
+        for (int i = 1; i < paths.Length; i++)
+        {
+            // Spawn Bots
+            if (paths[i].BotSpots == null) continue;    // if the path is empty, then skip
+            BotGeneration(paths[i]);                    // Send path to generate bots, it will consider
+                                                        // the difficulty of the path as well
+            // Spawn Snares
+            if (paths[i].BotSpots == null) continue;    
+            SnareGeneration(paths[i]);
+        }
+
+    }
+
+    private void AssignDifficulties()
+    {
+        // index 0 is empty, 1 is the defaulty path, 2-3-4 is the 3 paths
+        paths[1].pathDifficulty = 1;
+
         // Get the first one
-        pathOneDiff = Random.Range(1, 4); // Take difficulty from 1 to 3
+        paths[2].pathDifficulty = Random.Range(1, 4); // Take difficulty from 1 to 3
 
         // Get the second one
         do
         {
-            pathTwoDiff = Random.Range(1, 4);
+            paths[3].pathDifficulty = Random.Range(1, 4);
         }
-        while (pathTwoDiff == pathOneDiff);  // if path 2 is equal path 1, than take again
+        while (paths[3].pathDifficulty == paths[2].pathDifficulty);  // if path 2 is equal path 1, than take again
 
         // Get the last one
         do
         {
-            pathThreeDiff = Random.Range(1, 4);
+            paths[4].pathDifficulty = Random.Range(1, 4);
         }
-        while (pathThreeDiff == pathOneDiff || pathThreeDiff == pathTwoDiff);
-        #endregion
-
-        // ** Spawn Bots ** //
-        #region
-        // Spawn for Path one and default
-
-
-        // Spawn for path two
-
-
-        // Spawn for path three
-
-
-        #endregion
-
-
+        while (paths[4].pathDifficulty == paths[2].pathDifficulty || paths[4].pathDifficulty == paths[3].pathDifficulty);
     }
 
-    void Update()
+    private void SnareGeneration(Path _path)
     {
-        
+        // Get the spots
+        GameObject bottomSpots = null;
+        GameObject turningBladeSpots = null;
+        GameObject chainSpots = null;
+        GameObject bladeSpots = null;
+        GameObject stoneSpots = null;
+
+        if (_path.BotSpots != null) { bottomSpots = _path.BottomSpots; }
+        if (_path.BotSpots != null) { turningBladeSpots = _path.TurningBladeSpots; }
+        if (_path.BotSpots != null) { chainSpots = _path.ChainBladeSpots; }
+        if (_path.BotSpots != null) { bladeSpots = _path.BladeSpots; }
+        if (_path.BotSpots != null) { stoneSpots = _path.StoneSpots; }
+
+
+        if (bottomSpots != null)    // Generate the bottom snares
+        {
+            Transform[] spots = bottomSpots.GetComponentsInChildren<Transform>();
+            foreach (Transform spot in spots)
+            {
+                // 10-20-30% of the spots will generate bottom snares according to difficulty level (1-2-3)
+                if (_path.pathDifficulty < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
+
+                if (spot.name.EndsWith("Spots")) continue; // if it get the spots' parent object, then skip it.
+
+                Snare newSnare = Instantiate(bottomWoodSnare, spot.transform.position, Quaternion.identity, spot);
+
+                spot.GetComponent<SnareSpot>().AssignSnare(true);           //Let the spot know we gave a snare to it
+                newSnare.maxWaitTime = 15f * (4 - _path.pathDifficulty);  // Set the wait time 15-30-45 with 3-2-1 difficulty
+            }
+        }
+        if (turningBladeSpots != null)    // Generate the turning blade snares
+        {
+            Transform[] spots = turningBladeSpots.GetComponentsInChildren<Transform>();
+            foreach (Transform spot in spots)
+            {
+                // 10-20-30% of the spots will generate bottom snares according to difficulty level (1-2-3)
+                if (_path.pathDifficulty < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
+
+                if (spot.name.EndsWith("Spots")) continue; // if it get the spots' parent object, then skip it.
+
+                Snare newSnare = Instantiate(turningBladeSnare, spot.transform.position, Quaternion.identity, spot);
+
+                spot.GetComponent<SnareSpot>().AssignSnare(true);           //Let the spot know we gave a snare to it
+                
+            }
+        }
+        if (chainSpots != null)    // Generate the turning blade snares
+        {
+            Transform[] spots = chainSpots.GetComponentsInChildren<Transform>();
+            foreach (Transform spot in spots)
+            {
+                // 10-20-30% of the spots will generate bottom snares according to difficulty level (1-2-3)
+                if (_path.pathDifficulty < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
+
+                if (spot.name.EndsWith("Spots")) continue; // if it get the spots' parent object, then skip it.
+
+                Snare newSnare = Instantiate(chainBladeSnare.GetComponentInChildren<Snare>(), spot.transform.position, Quaternion.identity, spot);
+
+                spot.GetComponent<SnareSpot>().AssignSnare(true);           //Let the spot know we gave a snare to it
+
+            }
+        }
+        if (bladeSpots != null)    // Generate the turning blade snares
+        {
+            Transform[] spots = bladeSpots.GetComponentsInChildren<Transform>();
+            foreach (Transform spot in spots)
+            {
+                // 10-20-30% of the spots will generate bottom snares according to difficulty level (1-2-3)
+                if (_path.pathDifficulty < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
+
+                if (spot.name.EndsWith("Spots")) continue; // if it get the spots' parent object, then skip it.
+
+                Snare newSnare = Instantiate(bladeSnare, spot.transform.position, Quaternion.identity, spot);
+
+                spot.GetComponent<SnareSpot>().AssignSnare(true);           //Let the spot know we gave a snare to it
+
+            }
+        }
+        if (stoneSpots != null)    // Generate the turning blade snares
+        {
+            Transform[] spots = stoneSpots.GetComponentsInChildren<Transform>();
+            foreach (Transform spot in spots)
+            {
+                // 10-20-30% of the spots will generate bottom snares according to difficulty level (1-2-3)
+                if (_path.pathDifficulty < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
+
+                if (spot.name.EndsWith("Spots")) continue; // if it get the spots' parent object, then skip it.
+
+                Snare newSnare = Instantiate(stoneSnare, spot.transform.position, Quaternion.identity, spot);
+
+                spot.GetComponent<SnareSpot>().AssignSnare(true);           //Let the spot know we gave a snare to it
+
+            }
+        }
     }
 
-    // 
+    private void BotGeneration(Path _path)
+    {
+        GameObject _botSpots = _path.BotSpots;
+        Transform[] spots = _botSpots.GetComponentsInChildren<Transform>();
+
+        foreach (Transform spot in spots)
+        {
+            // 10-20-30% of the spots will generate bots according to difficulty level (1-2-3)
+            if (_path.pathDifficulty < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
+
+            if (spot.name.EndsWith("Spots")) continue; // if it get the spots' parent object, then skip it.
+
+            // Spawn the bot
+            StickBot newBot = Instantiate(bot, spot.transform.position, Quaternion.identity, spot);
+            
+            // Get a random number to set tier accordingly
+            float randomNum = Random.Range(0f, 1f);
+
+            // Set its tier according to level
+            switch (level)
+            {
+                case 1:
+                    // 75% Tier 1, 25% Tier 2
+                    if (0.75f > randomNum) newBot.SetTier(1);
+                    else newBot.SetTier(2);
+                    break;
+
+                case 2:
+                    // 50% Tier 1, 50% Tier 2
+                    if (0.50f > randomNum) newBot.SetTier(1);
+                    else newBot.SetTier(2);
+                    break;
+
+                case 3:
+                    // 25% Tier 1, 50% Tier 2, 25% Tier 3
+                    if (0.25f > randomNum) newBot.SetTier(1);
+                    else if (0.50f > randomNum) newBot.SetTier(2);
+                    else newBot.SetTier(3);
+                    break;
+
+                default:
+                    Debug.LogError("Bot generation couldn't detect the accurate level. Please check the Level Generation");
+                    break;
+            }
+        }
+    }
+
 }
