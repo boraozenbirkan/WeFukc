@@ -241,7 +241,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1798e609095c4045a9931be72429b47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionTest: 0
+  maxWaitTime: 15
+  snareActivated: 0
   bottomSnare: 0
   turningBladeSnare: 0
   chainBladeSnare: 1
@@ -249,5 +250,4 @@ MonoBehaviour:
   bladeSnare: 0
   turningBlade_Range: 5
   turningBlade_MoveSpeed: 5
-  turningBlade_MinSpawnTime: 10
-  turningBlade_MaxSpawnTime: 60
+  turningBlade_MaxSpawnTimeIndex: 3

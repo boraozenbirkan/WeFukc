@@ -88,7 +88,6 @@ public class Snare : MonoBehaviour
         {
             transform.localPosition = new Vector2(0f, 20f); // Place the stone in a high space
         }
-
         currentWaitTime = Random.Range(minWaitTime, maxWaitTime);
     }
 
@@ -157,6 +156,8 @@ public class Snare : MonoBehaviour
                 GetComponent<Rigidbody2D>().gravityScale = 0;
             }
 
+            didHit = true; // Avoid giving damage after hitting ground
+
             // Destroy stone 8 seconds afer collision
             StartCoroutine(DestroyIn(8f));
         }
@@ -196,7 +197,7 @@ public class Snare : MonoBehaviour
         else if (bottomSnare_upDone)
         {
             // wait
-            currentWaitTime -= Time.deltaTime;
+            currentWaitTime -= 20f * Time.deltaTime;
 
             // If time is done
             if (currentWaitTime < 0) { 
@@ -341,7 +342,7 @@ public class Snare : MonoBehaviour
         else if (chainBlade_upDone)
         {
             // wait
-            currentWaitTime -= Time.deltaTime;
+            currentWaitTime -= 3 * Time.deltaTime;
 
             // If time is done
             if (currentWaitTime < 0)
@@ -397,7 +398,7 @@ public class Snare : MonoBehaviour
         else if (balde_downDone)
         {
             // wait - same as bottom snares
-            currentWaitTime -= Time.deltaTime;
+            currentWaitTime -= 20f * Time.deltaTime;
 
             // If time is done
             if (currentWaitTime < 0)

@@ -15,6 +15,9 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private Snare bladeSnare;
     [SerializeField] private Snare stoneSnare;
 
+    [Header("Snare Tunening")]
+    [SerializeField] private float maxWaitTime = 15f;
+
     // Each path element has spots as a game object. Bot spots have transform as spot.
     // Snare Spots have Snare object as spot except the chain snare. It has GameObject, then under it, Snare
     [SerializeField] private Path[] paths;
@@ -41,12 +44,12 @@ public class LevelGenerator : MonoBehaviour
      * Difficulty Difference when spawn a snare - These percentages differs according to number of possible spots
      * -- For instance, bottom snare have lots of spots to spawn. Therefore, they have less percentage to spawn
      * 
-     * Bots: 10-20-30%              Place them in every 10 units
-     * Bottom: 10-20-30%            10 units
-     * Turning Blade: 20-40-60%     
-     * Chain Balde: 10-20-30%       10 units
-     * Blade: 20-40-60%             at least 20 units 
-     * Stone: 10-20-30%             10 units
+     * Bots: 10-20-30%              Place them in every 10 units        3 units above surface
+     * Bottom: 5-10-15%           10 units                            2 units below surface
+     * Turning Blade: 10-20-30%                                         3.5 units below surface
+     * Chain Balde: 5-10-15%        10 units                            3.3 units above surface
+     * Blade: 5-10-15%                                                  3 units above from the roof
+     * Stone: 5-10-15%              10 units                            on the road
      * 
      */
 
@@ -84,7 +87,7 @@ public class LevelGenerator : MonoBehaviour
         AssignDifficulties();
 
         // DEBUG: Set the path difficulties automatically
-        paths[2].pathDifficulty = 1; paths[3].pathDifficulty = 2; paths[4].pathDifficulty = 3;
+        paths[1].pathDifficulty = 3; paths[2].pathDifficulty = 1; paths[3].pathDifficulty = 2; paths[4].pathDifficulty = 3;
         
         // 1. path is the default, 2-3-4. paths are normal paths | First index is empty due to Unity's bug
         for (int i = 1; i < paths.Length; i++)
@@ -145,17 +148,17 @@ public class LevelGenerator : MonoBehaviour
             foreach (Transform spot in spots)
             {
                 // 10-20-30% of the spots will generate bottom snares according to difficulty level (1-2-3)
-                if (_path.pathDifficulty < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
+                if (_path.pathDifficulty * 0.5f < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
 
                 if (spot.name.EndsWith("Spots")) continue; // if it get the spots' parent object, then skip it.
 
-                Snare newSnare = Instantiate(bottomWoodSnare, spot.transform.position, Quaternion.identity, spot);
+                Snare newSnare = Instantiate(bottomWoodSnare, spot);
 
                 spot.GetComponent<SnareSpot>().AssignSnare(true);           //Let the spot know we gave a snare to it
-                newSnare.maxWaitTime = 15f * (4 - _path.pathDifficulty);  // Set the wait time 15-30-45 with 3-2-1 difficulty
+                newSnare.maxWaitTime = maxWaitTime * (4 - _path.pathDifficulty);  // Set the wait time 15-30-45 with 3-2-1 difficulty
             }
         }
-        if (turningBladeSpots != null)    // Generate the turning blade snares
+        if (turningBladeSpots != null)
         {
             Transform[] spots = turningBladeSpots.GetComponentsInChildren<Transform>();
             foreach (Transform spot in spots)
@@ -165,10 +168,16 @@ public class LevelGenerator : MonoBehaviour
 
                 if (spot.name.EndsWith("Spots")) continue; // if it get the spots' parent object, then skip it.
 
-                Snare newSnare = Instantiate(turningBladeSnare, spot.transform.position, Quaternion.identity, spot);
+                Snare newSnare = Instantiate(turningBladeSnare, spot);
 
                 spot.GetComponent<SnareSpot>().AssignSnare(true);           //Let the spot know we gave a snare to it
-                
+
+                if (_path.pathDifficulty == 1) newSnare.turningBlade_MoveSpeed = 10;
+                else if (_path.pathDifficulty == 2) newSnare.turningBlade_MoveSpeed = 15;
+                else newSnare.turningBlade_MoveSpeed = 20;
+
+                newSnare.turningBlade_MaxSpawnTimeIndex = 4 - _path.pathDifficulty; // spawn time decreases while difficulty increase
+                newSnare.maxWaitTime = maxWaitTime * (4 - _path.pathDifficulty);
             }
         }
         if (chainSpots != null)    // Generate the turning blade snares
@@ -177,14 +186,14 @@ public class LevelGenerator : MonoBehaviour
             foreach (Transform spot in spots)
             {
                 // 10-20-30% of the spots will generate bottom snares according to difficulty level (1-2-3)
-                if (_path.pathDifficulty < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
+                if (_path.pathDifficulty * 0.5f < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
 
                 if (spot.name.EndsWith("Spots")) continue; // if it get the spots' parent object, then skip it.
 
-                Snare newSnare = Instantiate(chainBladeSnare.GetComponentInChildren<Snare>(), spot.transform.position, Quaternion.identity, spot);
+                GameObject newSnare = Instantiate(chainBladeSnare, spot);
 
                 spot.GetComponent<SnareSpot>().AssignSnare(true);           //Let the spot know we gave a snare to it
-
+                newSnare.GetComponentInChildren<Snare>().maxWaitTime = maxWaitTime * (4 - _path.pathDifficulty);
             }
         }
         if (bladeSpots != null)    // Generate the turning blade snares
@@ -193,14 +202,14 @@ public class LevelGenerator : MonoBehaviour
             foreach (Transform spot in spots)
             {
                 // 10-20-30% of the spots will generate bottom snares according to difficulty level (1-2-3)
-                if (_path.pathDifficulty < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
+                if (_path.pathDifficulty * 0.5f < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
 
                 if (spot.name.EndsWith("Spots")) continue; // if it get the spots' parent object, then skip it.
 
-                Snare newSnare = Instantiate(bladeSnare, spot.transform.position, Quaternion.identity, spot);
+                Snare newSnare = Instantiate(bladeSnare, spot);
 
                 spot.GetComponent<SnareSpot>().AssignSnare(true);           //Let the spot know we gave a snare to it
-
+                newSnare.maxWaitTime = maxWaitTime * (4 - _path.pathDifficulty);
             }
         }
         if (stoneSpots != null)    // Generate the turning blade snares
@@ -209,14 +218,15 @@ public class LevelGenerator : MonoBehaviour
             foreach (Transform spot in spots)
             {
                 // 10-20-30% of the spots will generate bottom snares according to difficulty level (1-2-3)
-                if (_path.pathDifficulty < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
+                if (_path.pathDifficulty * 0.5f < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
 
                 if (spot.name.EndsWith("Spots")) continue; // if it get the spots' parent object, then skip it.
 
-                Snare newSnare = Instantiate(stoneSnare, spot.transform.position, Quaternion.identity, spot);
+                Snare newSnare = Instantiate(stoneSnare, spot);
 
                 spot.GetComponent<SnareSpot>().AssignSnare(true);           //Let the spot know we gave a snare to it
-
+                spot.GetComponent<SnareSpot>().SetActivationDistance(20f);
+                newSnare.maxWaitTime = Random.Range(1f, 3f); // Random wait time
             }
         }
     }

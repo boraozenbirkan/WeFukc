@@ -26,7 +26,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8313176936591592369}
-  m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5000001, y: 1.5000001, z: 1}
   m_ConstrainProportionsScale: 0
@@ -124,7 +124,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1798e609095c4045a9931be72429b47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionTest: 0
+  maxWaitTime: 15
+  snareActivated: 0
   bottomSnare: 0
   turningBladeSnare: 0
   chainBladeSnare: 0
@@ -132,5 +133,4 @@ MonoBehaviour:
   bladeSnare: 1
   turningBlade_Range: 5
   turningBlade_MoveSpeed: 5
-  turningBlade_MinSpawnTime: 10
-  turningBlade_MaxSpawnTime: 60
+  turningBlade_MaxSpawnTimeIndex: 3

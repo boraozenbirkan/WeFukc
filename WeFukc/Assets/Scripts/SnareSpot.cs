@@ -6,7 +6,7 @@ public class SnareSpot : MonoBehaviour
 {
     [Header("General")]
     [SerializeField] private bool isSnareAssigned = false;
-    [SerializeField] private float snareActivationDistance = 50f;
+    [SerializeField] private float snareActivationDistance = 100f;
 
     [Header("Turning Blade")]
     [SerializeField] private float turningBladeRange = 5f;
