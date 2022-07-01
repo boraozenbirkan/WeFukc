@@ -87,7 +87,7 @@ public class LevelGenerator : MonoBehaviour
         AssignDifficulties();
 
         // DEBUG: Set the path difficulties automatically
-        paths[1].pathDifficulty = 3; paths[2].pathDifficulty = 1; paths[3].pathDifficulty = 2; paths[4].pathDifficulty = 3;
+        paths[2].pathDifficulty = 1; paths[3].pathDifficulty = 2; paths[4].pathDifficulty = 3;
         
         // 1. path is the default, 2-3-4. paths are normal paths | First index is empty due to Unity's bug
         for (int i = 1; i < paths.Length; i++)

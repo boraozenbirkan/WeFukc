@@ -735,6 +735,7 @@ public class StickBot : MonoBehaviour
         StartCoroutine(DestroyLater());
     }
 
+    public void CertainDeath() { health = 0f; isDying = true; CheckDeath(); }
     IEnumerator DestroyLater()
     {
         // Place death SFX here

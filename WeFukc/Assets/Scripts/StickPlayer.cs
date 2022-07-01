@@ -539,6 +539,8 @@ public class StickPlayer : MonoBehaviour
         StartCoroutine(DestroyLater());
     }
 
+    public void CertainDeath() { health = 0f; isDying = true; CheckDeath(); }
+
     IEnumerator DestroyLater()
     {
         FindObjectOfType<AudioManager>().PlaySFX("Death");
