@@ -5,10 +5,10 @@ using UnityEngine.UI;
 public class StickPlayer : MonoBehaviour
 {
     [Header("Movement")]
-    [SerializeField] private float movementSpeed = 20f;
-    [SerializeField] private float jumpForce = 20f;
-    [SerializeField] private float flyingKickForce = 5f;
-    [SerializeField] private float flyingKickUp = 5f;
+    [SerializeField] private float movementSpeed = 15f;
+    [SerializeField] private float jumpForce = 30f;
+    [SerializeField] private float flyingKickForce = 15f;
+    [SerializeField] private float flyingKickUp = 15f;
     [SerializeField] private StickSensor groundSensor;
     [SerializeField] private Slider healthSlider;
     [SerializeField] private Slider staminaSlider;
@@ -474,7 +474,19 @@ public class StickPlayer : MonoBehaviour
     // TakenDamage is a one-size-fits-all method
     public void TakenDamage(string _takenDamageType, float _takenDamagePoint, bool _DamageDirection)
     {
-        if (!canAnimate || isDefending) return; // If the char even can't move, don't take any damage
+        if (!canAnimate) return; // If the char even can't move, don't take any damage
+
+        if (isDefending)  // Don't take damage if we are defending against enemy
+        {
+            if (facingRightInt > 0 && _DamageDirection) return;
+            else if (facingRightInt < 0 && !_DamageDirection) return;
+            else
+            {
+
+                isDefending = false;
+                animator.SetBool(DEFENDING, false);
+            }
+        }
 
         health -= _takenDamagePoint; 
         if (health <= 0f)

@@ -8,11 +8,10 @@ public class LevelGenerator : MonoBehaviour
     [Header("Level Elements")]
     [SerializeField] [Range(1, 20)] private int level = 1;
     [SerializeField] private StickBot bot;
-    [SerializeField] private Snare bottomWoodSnare;
-    [SerializeField] private Snare bottomMetalSnare;
+    [SerializeField] private Snare bottomSnare;
     [SerializeField] private Snare turningBladeSnare;
     [SerializeField] private GameObject chainBladeSnare;
-    [SerializeField] private Snare bladeSnare;
+    //[SerializeField] private Snare bladeSnare;
     [SerializeField] private Snare stoneSnare;
 
     [Header("Snare Tunening")]
@@ -132,13 +131,13 @@ public class LevelGenerator : MonoBehaviour
         GameObject bottomSpots = null;
         GameObject turningBladeSpots = null;
         GameObject chainSpots = null;
-        GameObject bladeSpots = null;
+        //GameObject bladeSpots = null;
         GameObject stoneSpots = null;
 
         if (_path.BotSpots != null) { bottomSpots = _path.BottomSpots; }
         if (_path.BotSpots != null) { turningBladeSpots = _path.TurningBladeSpots; }
         if (_path.BotSpots != null) { chainSpots = _path.ChainBladeSpots; }
-        if (_path.BotSpots != null) { bladeSpots = _path.BladeSpots; }
+        //if (_path.BotSpots != null) { bladeSpots = _path.BladeSpots; }
         if (_path.BotSpots != null) { stoneSpots = _path.StoneSpots; }
 
 
@@ -152,7 +151,7 @@ public class LevelGenerator : MonoBehaviour
 
                 if (spot.name.EndsWith("Spots")) continue; // if it get the spots' parent object, then skip it.
 
-                Snare newSnare = Instantiate(bottomWoodSnare, spot);
+                Snare newSnare = Instantiate(bottomSnare, spot);
 
                 spot.GetComponent<SnareSpot>().AssignSnare(true);           //Let the spot know we gave a snare to it
                 newSnare.maxWaitTime = maxWaitTime * (4 - _path.pathDifficulty);  // Set the wait time 15-30-45 with 3-2-1 difficulty
@@ -196,7 +195,11 @@ public class LevelGenerator : MonoBehaviour
                 newSnare.GetComponentInChildren<Snare>().maxWaitTime = maxWaitTime * (4 - _path.pathDifficulty);
             }
         }
-        if (bladeSpots != null)    // Generate the turning blade snares
+        /* 
+         * Canceled: Blade Snare
+         * 
+         * 
+         * if (bladeSpots != null)    // Generate the turning blade snares
         {
             Transform[] spots = bladeSpots.GetComponentsInChildren<Transform>();
             foreach (Transform spot in spots)
@@ -212,6 +215,7 @@ public class LevelGenerator : MonoBehaviour
                 newSnare.maxWaitTime = maxWaitTime * (4 - _path.pathDifficulty);
             }
         }
+        */
         if (stoneSpots != null)    // Generate the turning blade snares
         {
             Transform[] spots = stoneSpots.GetComponentsInChildren<Transform>();

@@ -24,10 +24,8 @@ public class SnareSpot : MonoBehaviour
     /* Spot Location
      * 
      * Stone: level of the body
-     * Bottom: 2 units below of the surface
-     * Blade: 3 units up from the bottom of the ground
-     * Turning blade: 3.5 units below of the surface
-     * Chain Blade: 3.3 units up from the buttom of the ground
+     * Blade: Bottom of the roof
+     * Others: Surface of the floor
      * 
      */
 

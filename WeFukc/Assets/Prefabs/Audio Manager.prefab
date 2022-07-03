@@ -159,3 +159,10 @@ MonoBehaviour:
     volume: 0.8
     pitch: 1
     source: {fileID: 0}
+  - name: Impact_Fall
+    clip: {fileID: 8300000, guid: 1790b8d566f888d488313ef0f2f9988a, type: 3}
+    loop: 0
+    playOnAwake: 0
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}

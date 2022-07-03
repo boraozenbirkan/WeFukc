@@ -26,8 +26,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7078428307020259903}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: -2.5, z: 0}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7078428307841646963}
@@ -46,7 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1798e609095c4045a9931be72429b47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  actionTest: 0
+  maxWaitTime: 15
+  snareActivated: 0
   bottomSnare: 0
   turningBladeSnare: 1
   chainBladeSnare: 0
@@ -54,9 +55,7 @@ MonoBehaviour:
   bladeSnare: 0
   turningBlade_Range: 40
   turningBlade_MoveSpeed: 10
-  turningBlade_MinSpawnTime: 10
-  turningBlade_MaxSpawnTime: 60
-  bottomSnare_waitTime: 2
+  turningBlade_MaxSpawnTimeIndex: 3
 --- !u!58 &735244346
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -143,8 +142,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -170917839
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: a405655bf871ccc42b02dc229879409b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

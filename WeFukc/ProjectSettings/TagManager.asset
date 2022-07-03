@@ -45,14 +45,14 @@ TagManager:
   - name: Background
     uniqueID: 2154423093
     locked: 0
-  - name: Layer0
+  - name: Snares
     uniqueID: 4124049457
+    locked: 0
+  - name: Ground
+    uniqueID: 1593336975
     locked: 0
   - name: Player
     uniqueID: 2863210509
-    locked: 0
-  - name: Layer1
-    uniqueID: 1593336975
     locked: 0
   - name: Layer2
     uniqueID: 652960749

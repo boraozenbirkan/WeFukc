@@ -12,6 +12,7 @@ public class StickBot : MonoBehaviour
     [SerializeField] private StickSensor endUpSensor;
     [SerializeField] private StickSensor endDownSensor;
     [SerializeField] private StickSensor jumpUpSensor;
+    [SerializeField] private GameObject[] bodyColor;
 
     private float maxHealth = 100f;
     private float punchHitPoint = 5f;
@@ -26,6 +27,7 @@ public class StickBot : MonoBehaviour
     [SerializeField] private GameObject deadBody_Head;
     [SerializeField] private GameObject deadBody_Leg;
     [SerializeField] private GameObject[] originalBodyParts;
+    [SerializeField] private GameObject[] deathBodyColor;
 
     [Header("Fight Components")]
     [SerializeField] private Transform punchHitLocation;
@@ -53,6 +55,7 @@ public class StickBot : MonoBehaviour
     // Movement vars
     private bool grounded = false;
     private bool canAnimate = true;
+    private bool allowDamage = true;
     private float movement = 0f;
     private float facingRightInt = 0f;
 
@@ -108,6 +111,20 @@ public class StickBot : MonoBehaviour
     [SerializeField] private bool showRangeAndDistance = false;
     [SerializeField] [Range(1, 15)] private int botTier = 1;
 
+    /*
+     * Tier Colors: 
+     * 1-3 Green, 0, 176, 80 
+     * 4-6 Blue, 68, 114, 196
+     * 7-9 Yellowish, 255, 192, 0
+     * 10-12 Orange, 237, 125, 49
+     * 13-15 Red, 192, 0, 0
+     * 
+     */
+    Color32 tierColor1_3 = new Color32(0, 176, 80, 255);
+    Color32 tierColor4_6 = new Color32(68, 114, 196, 255);
+    Color32 tierColor7_9 = new Color32(255, 192, 0, 255);
+    Color32 tierColor10_12 = new Color32(237, 125, 49, 255);
+    Color32 tierColor12_15 = new Color32(192, 0, 0, 255);
 
 
 
@@ -662,6 +679,7 @@ public class StickBot : MonoBehaviour
     private void KickFallBackUp()
     {   // Push forward when its standing up again
         rigidbody.velocity = new Vector2(takenPunchMove * facingRightInt, rigidbody.velocity.y);
+        allowDamage = true;
     }
     private void StopCharacter()
     {
@@ -675,7 +693,7 @@ public class StickBot : MonoBehaviour
     // TakenDamage is a one-size-fits-all method
     public void TakenDamage(string _takenDamageType, float _takenDamagePoint, bool _DamageDirection)
     {
-        if (!canAnimate || isDefending) return; // If the char even can't move, don't take any damage
+        if (!allowDamage || isDefending) return; // If the char even can't move, don't take any damage
 
         health -= _takenDamagePoint;
         if (health <= 0f)
@@ -693,8 +711,15 @@ public class StickBot : MonoBehaviour
         if (!_DamageDirection && facingRightInt != -1) FlipCharacter(false);
 
         // Animate
-        if (_takenDamageType == PUNCH_HIT || _takenDamageType == PUNCH_RUN) animator.SetTrigger(DAMAGE_HEAD);
-        else if (_takenDamageType == FLYING_KICK || _takenDamageType == TURNING_KICK) animator.SetTrigger(KICK_FALL);
+        if (_takenDamageType == PUNCH_HIT || _takenDamageType == PUNCH_RUN)
+        {
+            animator.SetTrigger(DAMAGE_HEAD);
+        }
+        else if (_takenDamageType == FLYING_KICK || _takenDamageType == TURNING_KICK)
+        {
+            animator.SetTrigger(KICK_FALL);
+            allowDamage = false;
+        }
         else animator.SetTrigger(DAMAGE_DOWN);
 
         // Make attack sound (even though we got attacked, we make it)
@@ -745,6 +770,7 @@ public class StickBot : MonoBehaviour
         Destroy(gameObject);
     }
 
+
     public void SetTier(int tier)
     {
         switch (tier)
@@ -752,26 +778,56 @@ public class StickBot : MonoBehaviour
             case 1:
                 botTier = 1;
                 maxHealth = 30f;
-                hitDelay = 4f;
                 detectionRange = followDistance = 15f;
+                foreach (GameObject bodyPart in bodyColor)
+                {
+                    bodyPart.GetComponent<SpriteRenderer>().color = tierColor1_3;
+                }
+                foreach (GameObject bodyPart in deathBodyColor)
+                {
+                    bodyPart.GetComponent<SpriteRenderer>().color = tierColor1_3;
+                }
+
+                hitDelay = 4f;
                 canFlyKick = false;
                 break;
+
             case 2:
                 botTier = 2;
                 maxHealth = 60f;
-                hitDelay = 3f;
                 detectionRange = followDistance = 30f;
+                foreach (GameObject bodyPart in bodyColor)
+                {
+                    bodyPart.GetComponent<SpriteRenderer>().color = tierColor1_3;
+                }
+                foreach (GameObject bodyPart in deathBodyColor)
+                {
+                    bodyPart.GetComponent<SpriteRenderer>().color = tierColor1_3;
+                }
+
+                hitDelay = 3f;
                 canFlyKick = true;
                 flyKickChance = 2;
                 break;
+
             case 3:
                 botTier = 3;
                 maxHealth = 90f;
-                hitDelay = 1f;
                 detectionRange = followDistance = 45f;
+                foreach (GameObject bodyPart in bodyColor)
+                {
+                    bodyPart.GetComponent<SpriteRenderer>().color = tierColor1_3;
+                }
+                foreach (GameObject bodyPart in deathBodyColor)
+                {
+                    bodyPart.GetComponent<SpriteRenderer>().color = tierColor1_3;
+                }
+
+                hitDelay = 1f;
                 canFlyKick = true;
                 flyKickChance = 4;
                 break;
+
             default:
                 Debug.LogError("Tier undetected for " + gameObject.name);
                 break;

@@ -10,6 +10,6 @@ public class Path
     public GameObject ChainBladeSpots;
     public GameObject BottomSpots;
     public GameObject StoneSpots;
-    public GameObject BladeSpots;
+    //public GameObject BladeSpots;
     public GameObject BotSpots;
 }
