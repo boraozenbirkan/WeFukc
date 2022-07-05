@@ -12,6 +12,7 @@ public class AudioManager : MonoBehaviour
     public Sound[] otherSounds;
 
     private bool isPlayingMusic;
+    public bool isBbackgroundMusicOn = true;
     private Sound currentPlayingMusic;
     private float delayBetweenMusics = 5f;
 
@@ -66,7 +67,7 @@ public class AudioManager : MonoBehaviour
     private void Update()
     {
         // If music plays, wait until it ends.
-        if (isPlayingMusic)
+        if (isPlayingMusic && isBbackgroundMusicOn)
         {
             if (!currentPlayingMusic.source.isPlaying)  // After it ends, wait a bit more and start new one
             {

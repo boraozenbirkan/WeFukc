@@ -11,7 +11,6 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private Snare bottomSnare;
     [SerializeField] private Snare turningBladeSnare;
     [SerializeField] private GameObject chainBladeSnare;
-    //[SerializeField] private Snare bladeSnare;
     [SerializeField] private Snare stoneSnare;
 
     [Header("Snare Tunening")]
@@ -38,7 +37,7 @@ public class LevelGenerator : MonoBehaviour
      * 
      * Chain Snare
      * - The snare is inside of the gameObject. Reach it by GetComponentInChildren
-     * 
+     * - Left at least 6.3 unit in Y axis between platform
      * 
      * Difficulty Difference when spawn a snare - These percentages differs according to number of possible spots
      * -- For instance, bottom snare have lots of spots to spawn. Therefore, they have less percentage to spawn
@@ -99,7 +98,6 @@ public class LevelGenerator : MonoBehaviour
             if (paths[i].BotSpots == null) continue;    
             SnareGeneration(paths[i]);
         }
-
     }
 
     private void AssignDifficulties()
@@ -131,19 +129,12 @@ public class LevelGenerator : MonoBehaviour
         GameObject bottomSpots = null;
         GameObject turningBladeSpots = null;
         GameObject chainSpots = null;
-        //GameObject bladeSpots = null;
         GameObject stoneSpots = null;
 
-        if (_path.BotSpots != null) { bottomSpots = _path.BottomSpots; }
-        if (_path.BotSpots != null) { turningBladeSpots = _path.TurningBladeSpots; }
-        if (_path.BotSpots != null) { chainSpots = _path.ChainBladeSpots; }
-        //if (_path.BotSpots != null) { bladeSpots = _path.BladeSpots; }
-        if (_path.BotSpots != null) { stoneSpots = _path.StoneSpots; }
+        if (_path.BottomSpots != null) { 
 
+            Transform[] spots = _path.BottomSpots.GetComponentsInChildren<Transform>();
 
-        if (bottomSpots != null)    // Generate the bottom snares
-        {
-            Transform[] spots = bottomSpots.GetComponentsInChildren<Transform>();
             foreach (Transform spot in spots)
             {
                 // 10-20-30% of the spots will generate bottom snares according to difficulty level (1-2-3)
@@ -157,9 +148,10 @@ public class LevelGenerator : MonoBehaviour
                 newSnare.maxWaitTime = maxWaitTime * (4 - _path.pathDifficulty);  // Set the wait time 15-30-45 with 3-2-1 difficulty
             }
         }
-        if (turningBladeSpots != null)
-        {
-            Transform[] spots = turningBladeSpots.GetComponentsInChildren<Transform>();
+        if (_path.TurningBladeSpots != null) { 
+
+            Transform[] spots = _path.TurningBladeSpots.GetComponentsInChildren<Transform>();
+
             foreach (Transform spot in spots)
             {
                 // 10-20-30% of the spots will generate bottom snares according to difficulty level (1-2-3)
@@ -179,9 +171,10 @@ public class LevelGenerator : MonoBehaviour
                 newSnare.maxWaitTime = maxWaitTime * (4 - _path.pathDifficulty);
             }
         }
-        if (chainSpots != null)    // Generate the turning blade snares
-        {
-            Transform[] spots = chainSpots.GetComponentsInChildren<Transform>();
+        if (_path.ChainBladeSpots != null) { 
+
+            Transform[] spots = _path.ChainBladeSpots.GetComponentsInChildren<Transform>();
+
             foreach (Transform spot in spots)
             {
                 // 10-20-30% of the spots will generate bottom snares according to difficulty level (1-2-3)
@@ -195,30 +188,10 @@ public class LevelGenerator : MonoBehaviour
                 newSnare.GetComponentInChildren<Snare>().maxWaitTime = maxWaitTime * (4 - _path.pathDifficulty);
             }
         }
-        /* 
-         * Canceled: Blade Snare
-         * 
-         * 
-         * if (bladeSpots != null)    // Generate the turning blade snares
-        {
-            Transform[] spots = bladeSpots.GetComponentsInChildren<Transform>();
-            foreach (Transform spot in spots)
-            {
-                // 10-20-30% of the spots will generate bottom snares according to difficulty level (1-2-3)
-                if (_path.pathDifficulty * 0.5f < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
+        if (_path.StoneSpots != null) { 
 
-                if (spot.name.EndsWith("Spots")) continue; // if it get the spots' parent object, then skip it.
+            Transform[] spots = _path.StoneSpots.GetComponentsInChildren<Transform>();
 
-                Snare newSnare = Instantiate(bladeSnare, spot);
-
-                spot.GetComponent<SnareSpot>().AssignSnare(true);           //Let the spot know we gave a snare to it
-                newSnare.maxWaitTime = maxWaitTime * (4 - _path.pathDifficulty);
-            }
-        }
-        */
-        if (stoneSpots != null)    // Generate the turning blade snares
-        {
-            Transform[] spots = stoneSpots.GetComponentsInChildren<Transform>();
             foreach (Transform spot in spots)
             {
                 // 10-20-30% of the spots will generate bottom snares according to difficulty level (1-2-3)

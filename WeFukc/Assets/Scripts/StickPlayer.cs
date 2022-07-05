@@ -44,6 +44,8 @@ public class StickPlayer : MonoBehaviour
     [SerializeField] private float takenPunchMove = 3f;
     [SerializeField] private float takenKickMove = 6f;
 
+    [SerializeField] private LayerMask elevatorLayer;
+
     // Other game objects and components
     private Animator animator;
     private Rigidbody2D rigidbody;
@@ -76,6 +78,11 @@ public class StickPlayer : MonoBehaviour
     Collider2D[] hitEnemies;
     private bool allowMissSound = true;
     private float missSoundDelay = 1f;
+
+    // Other vars
+    private bool isElevatorActivated = false;
+    private bool fixFukcingPosBug = false;
+    [SerializeField] private bool hasKey = true;
 
     private const string SPEED = "Speed"; 
     private const string ON_AIR= "OnAir"; 
@@ -117,6 +124,13 @@ public class StickPlayer : MonoBehaviour
     {
         // if scene is not ready, do not execute anything
         if (!FindObjectOfType<LevelLoader>().isSceneReady()) return;
+
+        // fix the player's position after hoping into the elevator
+        if (fixFukcingPosBug)
+        {
+            transform.localPosition = Vector2.zero;
+            return;
+        }
 
         // If dying, stop and return
         if (isDying)
@@ -196,11 +210,47 @@ public class StickPlayer : MonoBehaviour
         else if (Input.GetKeyDown("s") || Input.GetKey("s")) isDefending = true;
         // If the key is released
         if (Input.GetKeyUp("s")) isDefending = false;
+
+        // Elevator Check - But not after activated!
+        if (Input.GetButton("Submit"))
+        {
+            if (hasKey) isElevatorActivated = true;
+            else Debug.Log("Find the key to use elevator!");
+        }
     }
 
     private void Actions()
     {
         if (!canAnimate) return; // If we can't animate a new movement, then doesn't care about the input
+
+        if (isElevatorActivated)
+        {
+            // Check if there is an elevator in front of us
+            Collider2D elevator = Physics2D.OverlapCircle(punchHitLocation.position, punchHitRange, elevatorLayer);
+
+            if (elevator == null)
+            {
+                isElevatorActivated = false;
+                return;
+            }
+
+            // Stop player 
+            rigidbody.gravityScale = 0f;
+            rigidbody.velocity = Vector2.zero;
+
+            // Make player child of elevator
+            transform.parent = elevator.gameObject.transform;
+
+            // Move it into the elevator and turn in to left
+            transform.localPosition = new Vector2(0f, transform.localPosition.y);
+            transform.localScale = new Vector2(-1f, 1f);
+
+            // Move Elevator
+            elevator.GetComponent<Elevator>().ActivateElevator();
+
+            isElevatorActivated = false;
+            fixFukcingPosBug = true;
+        }
 
         if (isDefending)
         {
@@ -328,9 +378,11 @@ public class StickPlayer : MonoBehaviour
             facingRightInt = -1; // Indicate that we are NO facing right
         }
     }
-    /*
+    
     private void OnDrawGizmos()
     {
+        //Gizmos.DrawCube(transform.position, new Vector2(10f, 2f));
+        /*
         Vector2 drawGismos = new Vector2(turningKickHitLocation.position.x, turningKickHitLocation.position.y);
         Gizmos.DrawWireSphere(drawGismos, turningKickHitRange);
 
@@ -339,8 +391,9 @@ public class StickPlayer : MonoBehaviour
         else
             drawGismos = new Vector2(turningKickHitLocation.position.x + 2.6f, turningKickHitLocation.position.y);
         Gizmos.DrawWireSphere(drawGismos, turningKickHitRange); 
+        */
     }
-    */
+    
     ///  ************************   ///
     ///      Animation Events       ///
     ///  ************************   ///

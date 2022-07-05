@@ -166,3 +166,11 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     source: {fileID: 0}
+  - name: Elevator
+    clip: {fileID: 8300000, guid: d7145d28b539e95458fce3d09b64e4cb, type: 3}
+    loop: 0
+    playOnAwake: 0
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+  isBbackgroundMusicOn: 1

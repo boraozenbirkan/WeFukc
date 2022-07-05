@@ -3288,8 +3288,12 @@ MonoBehaviour:
     m_Bits: 64
   takenPunchMove: 5
   takenKickMove: 20
+  elevatorLayer:
+    serializedVersion: 2
+    m_Bits: 512
   stamina: 0
   staminaJump: 3
+  hasKey: 1
 --- !u!1 &1789011466443325527
 GameObject:
   m_ObjectHideFlags: 0

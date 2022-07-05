@@ -145,9 +145,6 @@ public class StickBot : MonoBehaviour
         // Change max speed with a random number to avoid sentetic view of bots when they act together
         movementSpeed = Random.Range(8f, 15f);
     }
-
-
-
     private void Update()
     {
         // if scene is not ready, do not execute anything
@@ -459,6 +456,7 @@ public class StickBot : MonoBehaviour
         ///// Move /////
         // Move left and right if we can animate new movement
         rigidbody.velocity = new Vector2(movement, rigidbody.velocity.y);
+        allowDamage = true; // if we move, we can get damage, some bug fix ;)
 
         // Jump if you are on ground
         if (isJumping)
