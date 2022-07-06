@@ -206,17 +206,30 @@ public class StickPlayer : MonoBehaviour
         else if (Input.GetKeyDown("l") && grounded && velocityABS > 2f && stamina > flyingKickHitPoint) isFlyKicking = true;
         else if (Input.GetKeyDown("l") && grounded && velocityABS < 1f && stamina > kickHitPoint) isKicking = true;
         
-        // Defense //
-        else if (Input.GetKeyDown("s") || Input.GetKey("s")) isDefending = true;
-        // If the key is released
-        if (Input.GetKeyUp("s")) isDefending = false;
-
         // Elevator Check - But not after activated!
-        if (Input.GetButton("Submit"))
+        else if (Input.GetButton("Submit"))
         {
             if (hasKey) isElevatorActivated = true;
             else Debug.Log("Find the key to use elevator!");
         }
+
+        // Defense //
+        else if (Input.GetKeyDown("s") || Input.GetKey("s")) isDefending = true;
+
+        // If none of them pressed, reset all
+        else
+        {
+            isPunching = false;
+            isRunPunching = false;
+            isTurningKicking = false;
+            isFlyKicking = false;
+            isKicking = false;
+            isElevatorActivated = false;
+        }
+        // If the key is released
+        if (Input.GetKeyUp("s")) isDefending = false;
+
+        
     }
 
     private void Actions()
