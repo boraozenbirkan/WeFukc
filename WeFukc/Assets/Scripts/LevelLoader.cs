@@ -17,8 +17,7 @@ public class LevelLoader : MonoBehaviour
     // Loading Texts
     private string[] loadingTexts = {
         "Did you know that Satoshi Nakamoto, the  **The Times 03/Jan/2009 Chancellor on brink of second bailout for banks.**. So what does it mean?",
-        "As of March 2021, COVID costs totaled $5.2 trillion. World War II cost $4.7 trillion (in today’s dollars)",
-        "In last 2 years, US Government printed 30% of the all money in the US history!",
+        "As of March 2021, COVID costs totaled $5.2 trillion. World War II cost $4.7 trillion (in today’s dollars). Can you see how worthless fiat money become?",
         "When goverments and banks print money, they basically take your money from your pocket. Because they are decreasing value of the money by increasing the supply.",
         "In 2008, governments rescued the bank from bankruptcy. Even though banks cause the crisis, they did not pay the cost, you did.",
         "Did you know that private banks print money? Not only governments and central banks, but private banks print money also",
