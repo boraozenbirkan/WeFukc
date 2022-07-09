@@ -28,6 +28,7 @@ public class StickBot : MonoBehaviour
     [SerializeField] private GameObject deadBody_Leg;
     [SerializeField] private GameObject[] originalBodyParts;
     [SerializeField] private GameObject[] deathBodyColor;
+    [SerializeField] private GameObject key;
 
     [Header("Fight Components")]
     [SerializeField] private Transform punchHitLocation;
@@ -91,6 +92,7 @@ public class StickBot : MonoBehaviour
     private bool isWalkingRight = false;
     private bool isChasing = false;
     private bool isStopped = false;
+    public bool isKeyAssigned = false;
 
     private float patrolMaxChangeTime = 20f;   // Change time 5-20
     private float patrolMaxStopTime = 10f;     // Stop time 3-10
@@ -754,15 +756,19 @@ public class StickBot : MonoBehaviour
             deadBody_Head.GetComponent<Rigidbody2D>().AddForce(new Vector2(500, 0));
         }
 
-        // Now Trigger common death actions
+        // Drop the key if assigned
+        if (isKeyAssigned)
+        {
+            Instantiate(key, transform.position, Quaternion.identity);
+        }
+
+        // Remove the dead body later
         StartCoroutine(DestroyLater());
     }
 
     public void CertainDeath() { health = 0f; isDying = true; CheckDeath(); }
     IEnumerator DestroyLater()
     {
-        // Place death SFX here
-
         yield return new WaitForSeconds(10f);
 
         Destroy(gameObject);

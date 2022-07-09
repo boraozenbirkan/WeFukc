@@ -12,6 +12,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private Snare turningBladeSnare;
     [SerializeField] private GameObject chainBladeSnare;
     [SerializeField] private Snare stoneSnare;
+    [SerializeField] private GameObject ElevatorKey;
 
     [Header("Snare Tunening")]
     [SerializeField] private float maxWaitTime = 15f;
@@ -19,6 +20,10 @@ public class LevelGenerator : MonoBehaviour
     // Each path element has spots as a game object. Bot spots have transform as spot.
     // Snare Spots have Snare object as spot except the chain snare. It has GameObject, then under it, Snare
     [SerializeField] private Path[] paths;
+
+    // Other vars
+    private bool isKeyAssigned = false;
+    private bool passDefaultPathKey = false;
 
     /* Snare TODOs
      * 
@@ -86,6 +91,9 @@ public class LevelGenerator : MonoBehaviour
 
         // DEBUG: Set the path difficulties automatically
         paths[2].pathDifficulty = 1; paths[3].pathDifficulty = 2; paths[4].pathDifficulty = 3;
+
+        // Check if there are paths other than the default path to assign the key
+        CheckOtherPaths();
         
         // 1. path is the default, 2-3-4. paths are normal paths | First index is empty due to Unity's bug
         for (int i = 1; i < paths.Length; i++)
@@ -121,6 +129,16 @@ public class LevelGenerator : MonoBehaviour
             paths[4].pathDifficulty = Random.Range(1, 4);
         }
         while (paths[4].pathDifficulty == paths[2].pathDifficulty || paths[4].pathDifficulty == paths[3].pathDifficulty);
+    }
+
+    private void CheckOtherPaths()
+    {
+        // Start from the first (2. index) path to check all 3 paths
+        for (int i = 2; i < 5; i++) 
+        {
+            // If any of them has bots spots, then don't pass the default path key
+            if (paths[i].BotSpots != null) passDefaultPathKey = true;
+        }
     }
 
     private void SnareGeneration(Path _path)
@@ -213,6 +231,8 @@ public class LevelGenerator : MonoBehaviour
         GameObject _botSpots = _path.BotSpots;
         Transform[] spots = _botSpots.GetComponentsInChildren<Transform>();
 
+        StickBot newBot = null;
+
         foreach (Transform spot in spots)
         {
             // 10-20-30% of the spots will generate bots according to difficulty level (1-2-3)
@@ -221,7 +241,7 @@ public class LevelGenerator : MonoBehaviour
             if (spot.name.EndsWith("Spots")) continue; // if it get the spots' parent object, then skip it.
 
             // Spawn the bot
-            StickBot newBot = Instantiate(bot, spot.transform.position, Quaternion.identity, spot);
+            newBot = Instantiate(bot, spot.transform.position, Quaternion.identity, spot);
             
             // Get a random number to set tier accordingly
             float randomNum = Random.Range(0f, 1f);
@@ -252,7 +272,31 @@ public class LevelGenerator : MonoBehaviour
                     Debug.LogError("Bot generation couldn't detect the accurate level. Please check the Level Generation");
                     break;
             }
+
+            // Give key randomly
+
+            // Skip the default path if we should
+            if (passDefaultPathKey && _path.pathName == "Default")
+            {
+                isKeyAssigned = true;
+                continue;
+            }
+
+            if (!isKeyAssigned)
+            {
+                // Assign the key by 20%
+                if (2 < Random.Range(0f, 10f)){
+
+                }
+            }
         }
+        // If the key has not been assigned any of the bots, then assign it to the last one.
+        if (!isKeyAssigned) newBot.isKeyAssigned = true;
+
+        // Reset key assignment for the next paths
+        isKeyAssigned = false;
     }
+
+
 
 }

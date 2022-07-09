@@ -8,6 +8,7 @@ public class Elevator : MonoBehaviour
 {
     [SerializeField] private Image endScreen;
     [SerializeField] private TextMeshProUGUI endScreenText;
+    [SerializeField] private TextMeshProUGUI keyWarningText;
     private bool turnOnEndScreen = false;
     private float opacity = 0f;
 
@@ -20,6 +21,17 @@ public class Elevator : MonoBehaviour
                 endScreenText.color = new Color(255f, 255f, 255f, opacity); 
             }
         }
+    }
+
+    public void ShowKeyWarning()
+    {
+        StartCoroutine(KeyWarning());
+    }
+    IEnumerator KeyWarning()
+    {
+        keyWarningText.enabled = true;
+        yield return new WaitForSeconds(5f);
+        keyWarningText.enabled = false;
     }
 
 

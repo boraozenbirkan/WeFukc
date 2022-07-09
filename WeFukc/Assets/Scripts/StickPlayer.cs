@@ -45,6 +45,7 @@ public class StickPlayer : MonoBehaviour
     [SerializeField] private float takenKickMove = 6f;
 
     [SerializeField] private LayerMask elevatorLayer;
+    [SerializeField] private Image keyImage;
 
     // Other game objects and components
     private Animator animator;
@@ -210,7 +211,10 @@ public class StickPlayer : MonoBehaviour
         else if (Input.GetButton("Submit"))
         {
             if (hasKey) isElevatorActivated = true;
-            else Debug.Log("Find the key to use elevator!");
+            else
+            {
+                FindObjectOfType<Elevator>().ShowKeyWarning(); 
+            }
         }
 
         // Defense //
@@ -588,6 +592,8 @@ public class StickPlayer : MonoBehaviour
         if (_takenDamageType == FLYING_KICK || _takenDamageType == TURNING_KICK) 
             rigidbody.velocity = new Vector2(-takenKickMove * facingRightInt, rigidbody.velocity.y);
     }
+    
+    // Death actions
     private void CheckDeath()
     {
         if (!isDying) return;
@@ -617,6 +623,7 @@ public class StickPlayer : MonoBehaviour
         StartCoroutine(DestroyLater());
     }
 
+    // Occurs when a certain death comes like death wall
     public void CertainDeath() { health = 0f; isDying = true; CheckDeath(); }
 
     IEnumerator DestroyLater()
@@ -626,6 +633,12 @@ public class StickPlayer : MonoBehaviour
         yield return new WaitForSeconds(10f);
 
         Destroy(gameObject);
+    }
+
+    public void PickUpKey()
+    {
+        hasKey = true;
+        keyImage.enabled = true;
     }
 
 }
