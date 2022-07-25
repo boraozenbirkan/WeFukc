@@ -43,6 +43,7 @@ public class StickBot : MonoBehaviour
     [SerializeField] private LayerMask enemyLayers;
     private float takenPunchMove = 2f;
     private float takenKickMove = 5f;
+    [SerializeField] private FloatingDamage damageCanvas;
 
     // Other game objects and components
     private Animator animator;
@@ -729,6 +730,10 @@ public class StickBot : MonoBehaviour
         // Make attack sound (even though we got attacked, we make it)
         FindObjectOfType<AudioManager>().PlayAttackSound();
 
+        // Floating Damage
+        Instantiate(damageCanvas, transform.position, Quaternion.identity).
+            damageText.text = "-" + _takenDamagePoint.ToString();
+
         // Move away according to hit type
         if (_takenDamageType == PUNCH_RUN)
             rigidbody.velocity = new Vector2(-takenPunchMove * facingRightInt, rigidbody.velocity.y);
@@ -776,6 +781,12 @@ public class StickBot : MonoBehaviour
         yield return new WaitForSeconds(10f);
 
         Destroy(gameObject);
+    }
+
+    IEnumerator DestoryObject(GameObject _objectToDestroy, float _destroyTime)
+    {
+        yield return new WaitForSeconds(_destroyTime);
+        Destroy(_objectToDestroy);
     }
 
 

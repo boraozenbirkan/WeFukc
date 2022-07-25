@@ -43,6 +43,7 @@ public class StickPlayer : MonoBehaviour
     [SerializeField] private LayerMask enemyLayers;
     [SerializeField] private float takenPunchMove = 3f;
     [SerializeField] private float takenKickMove = 6f;
+    [SerializeField] private FloatingDamage damageCanvas;
 
     [SerializeField] private LayerMask elevatorLayer;
     [SerializeField] private Image keyImage;
@@ -585,6 +586,9 @@ public class StickPlayer : MonoBehaviour
         else if (_takenDamageType == SNARE_HEAD || _takenDamageType == SNARE_DOWN) { FindObjectOfType<AudioManager>().PlaySFX("Little_Pain"); }
         else { FindObjectOfType<AudioManager>().PlayAttackSound(); FindObjectOfType<AudioManager>().PlaySFX("Little_Pain"); }
 
+        // Floating Damage
+        Instantiate(damageCanvas, transform.position, Quaternion.identity).
+            damageText.text = "-" + _takenDamagePoint.ToString();
 
         // Move away according to hit type
         if (_takenDamageType == PUNCH_RUN) 

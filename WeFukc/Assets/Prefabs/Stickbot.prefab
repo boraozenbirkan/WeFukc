@@ -3020,6 +3020,7 @@ MonoBehaviour:
   enemyLayers:
     serializedVersion: 2
     m_Bits: 8
+  damageCanvas: {fileID: 1058474783, guid: 2e3291c1ff2ceee49bc193544dad0d7e, type: 3}
   isKeyAssigned: 0
   approachDistance: 5
   detectionRange: 15

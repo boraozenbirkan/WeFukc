@@ -3365,6 +3365,7 @@ MonoBehaviour:
     m_Bits: 64
   takenPunchMove: 5
   takenKickMove: 20
+  damageCanvas: {fileID: 1058474783, guid: 2e3291c1ff2ceee49bc193544dad0d7e, type: 3}
   elevatorLayer:
     serializedVersion: 2
     m_Bits: 512
