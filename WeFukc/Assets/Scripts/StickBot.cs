@@ -322,8 +322,11 @@ public class StickBot : MonoBehaviour
                     // Fly Kick Here
                     if (currentHitDelay < 0 && canFlyKick && Random.Range(0, 10) < flyKickChance && flyKickSensor.State())
                     {
-                        currentHitDelay = hitDelay;     // Reset the hit delay
-                        isFlyKicking = true;
+                        if (Mathf.Abs(targetPos.y - myPos.y) < 3f)
+                        {
+                            currentHitDelay = hitDelay;     // Reset the hit delay
+                            isFlyKicking = true;
+                        }
                     }
 
                     if (xDistance < 2.5f)
@@ -334,11 +337,13 @@ public class StickBot : MonoBehaviour
                         // Kick and Punch here
                         if (currentHitDelay < 0)
                         {
-                            currentHitDelay = hitDelay; // Reset the hit delay
-
-                            // Kick or Punch by 50%
-                            if (Random.Range(0, 10) < 5) isKicking = true;
-                            else isPunching = true;
+                            if (Mathf.Abs(targetPos.y - myPos.y) < 3f)
+                            {
+                                currentHitDelay = hitDelay; // Reset the hit delay
+                                // Kick or Punch by 50%
+                                if (Random.Range(0, 10) < 5) isKicking = true;
+                                else isPunching = true;
+                            }
                         }
                     }
                 }
@@ -379,8 +384,11 @@ public class StickBot : MonoBehaviour
                     // Fly Kick Here
                     if (currentHitDelay < 0 && canFlyKick && Random.Range(0, 10) < flyKickChance && flyKickSensor.State())
                     {
-                        currentHitDelay = hitDelay;     // Reset the hit delay
-                        isFlyKicking = true;
+                        if (Mathf.Abs(targetPos.y - myPos.y) < 3f)
+                        {
+                            currentHitDelay = hitDelay;     // Reset the hit delay
+                            isFlyKicking = true;
+                        }
                     }   
 
 
@@ -392,11 +400,13 @@ public class StickBot : MonoBehaviour
                         // Kick and Punch here
                         if (currentHitDelay < 0)
                         {
-                            currentHitDelay = hitDelay; // Reset the hit delay
-
-                            // Kick or Punch by 50%
-                            if (Random.Range(0, 10) < 5) isKicking = true;
-                            else isPunching = true;
+                            if (Mathf.Abs(targetPos.y - myPos.y) < 3f)
+                            {
+                                currentHitDelay = hitDelay; // Reset the hit delay
+                                // Kick or Punch by 50%
+                                if (Random.Range(0, 10) < 5) isKicking = true;
+                                else isPunching = true;
+                            }
                         }
                     }
                 }
