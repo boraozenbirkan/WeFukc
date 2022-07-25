@@ -58,6 +58,10 @@ public class StickPlayer : MonoBehaviour
     private string deathType;
     public float stamina;
     public float staminaJump = 3f;
+    [SerializeField] private Image staminaSliderImage;
+    private Color staminaColor;
+    private bool isHighlighting = false;
+    private float highlightSpeed = 0.1f;
 
 
     // Movement vars
@@ -118,6 +122,8 @@ public class StickPlayer : MonoBehaviour
 
         // Make player always chasing to avoid it get into slow walk anim like bots
         animator.SetBool("isChasing", true);
+
+        staminaColor = staminaSliderImage.color;
     }
 
 
@@ -200,13 +206,33 @@ public class StickPlayer : MonoBehaviour
         ///// Fight /////
         if (!grounded) return;  // On air, not get fighting input
         // Punching // 
-        if (Input.GetKeyDown("j") && velocityABS > 10f && stamina > punchRunHitPoint) isRunPunching = true;
-        else if (Input.GetKeyDown("j") && velocityABS < 1f && stamina > punchHitPoint) isPunching = true;
+        if (Input.GetKeyDown("j") && velocityABS > 10f)
+        {
+            if (stamina > punchRunHitPoint) isRunPunching = true;
+            else if (!isHighlighting) StartCoroutine(StaminaHighlight());
+        }
+        else if (Input.GetKeyDown("j") && velocityABS < 1f)
+        {
+            if (stamina > punchHitPoint) isPunching = true;
+            else if (!isHighlighting) StartCoroutine(StaminaHighlight());            
+        }
         
         // Kicking //
-        else if (Input.GetKeyDown("l") && grounded && Input.GetKey("w") && stamina > turningKickHitPoint) isTurningKicking = true;
-        else if (Input.GetKeyDown("l") && grounded && velocityABS > 2f && stamina > flyingKickHitPoint) isFlyKicking = true;
-        else if (Input.GetKeyDown("l") && grounded && velocityABS < 1f && stamina > kickHitPoint) isKicking = true;
+        else if (Input.GetKeyDown("l") && grounded && Input.GetKey("w"))
+        {
+            if (stamina > turningKickHitPoint) isTurningKicking = true;
+            else if (!isHighlighting) StartCoroutine(StaminaHighlight());
+        }
+        else if (Input.GetKeyDown("l") && grounded && velocityABS > 2f)
+        {
+            if (stamina > flyingKickHitPoint) isFlyKicking = true;
+            else if (!isHighlighting) StartCoroutine(StaminaHighlight());
+        }
+        else if (Input.GetKeyDown("l") && grounded && velocityABS < 1f)
+        {
+            if (stamina > kickHitPoint) isKicking = true;
+            else if (!isHighlighting) StartCoroutine(StaminaHighlight());
+        }
         
         // Elevator Check - But not after activated!
         else if (Input.GetButton("Submit"))
@@ -643,6 +669,61 @@ public class StickPlayer : MonoBehaviour
     {
         hasKey = true;
         keyImage.enabled = true;
+    }
+
+    IEnumerator StaminaHighlight()
+    {
+        isHighlighting = true;
+
+        staminaSliderImage.color = Color.white;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        staminaSliderImage.color = staminaColor;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        staminaSliderImage.color = Color.white;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        staminaSliderImage.color = staminaColor;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        staminaSliderImage.color = Color.white;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        staminaSliderImage.color = staminaColor;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        staminaSliderImage.color = Color.white;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        staminaSliderImage.color = staminaColor;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        staminaSliderImage.color = Color.white;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        staminaSliderImage.color = staminaColor;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        staminaSliderImage.color = Color.white;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        staminaSliderImage.color = staminaColor;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        staminaSliderImage.color = Color.white;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        staminaSliderImage.color = staminaColor;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        staminaSliderImage.color = Color.white;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        staminaSliderImage.color = staminaColor;
+        yield return new WaitForSeconds(highlightSpeed);
+
+        isHighlighting = false;
     }
 
 }
