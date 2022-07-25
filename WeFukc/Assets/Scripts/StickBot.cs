@@ -12,6 +12,7 @@ public class StickBot : MonoBehaviour
     [SerializeField] private StickSensor endUpSensor;
     [SerializeField] private StickSensor endDownSensor;
     [SerializeField] private StickSensor jumpUpSensor;
+    [SerializeField] private StickSensor flyKickSensor;
     [SerializeField] private GameObject[] bodyColor;
 
     private float maxHealth = 100f;
@@ -37,7 +38,7 @@ public class StickBot : MonoBehaviour
     [SerializeField] private Transform turningKickHitLocation;
     private float punchHitRange = 1f;
     private float kickHitRange = 0.8f;
-    private float flyingKickHitRange = 1f;
+    private float flyingKickHitRange = 0.7f;
     private float turningKickHitRange = 2f;
     [SerializeField] private LayerMask enemyLayers;
     private float takenPunchMove = 2f;
@@ -318,7 +319,7 @@ public class StickBot : MonoBehaviour
                     animator.SetBool(CLOSE_COMBAT, true);
 
                     // Fly Kick Here
-                    if (currentHitDelay < 0 && canFlyKick && Random.Range(0, 10) < flyKickChance)
+                    if (currentHitDelay < 0 && canFlyKick && Random.Range(0, 10) < flyKickChance && flyKickSensor.State())
                     {
                         currentHitDelay = hitDelay;     // Reset the hit delay
                         isFlyKicking = true;
@@ -375,7 +376,7 @@ public class StickBot : MonoBehaviour
                     animator.SetBool(CLOSE_COMBAT, true);
 
                     // Fly Kick Here
-                    if (currentHitDelay < 0 && canFlyKick && Random.Range(0, 10) < flyKickChance)
+                    if (currentHitDelay < 0 && canFlyKick && Random.Range(0, 10) < flyKickChance && flyKickSensor.State())
                     {
                         currentHitDelay = hitDelay;     // Reset the hit delay
                         isFlyKicking = true;
@@ -553,8 +554,11 @@ public class StickBot : MonoBehaviour
         //Vector2 drawGismos = new Vector2(turningKickHitLocation.position.x, turningKickHitLocation.position.y);
         if (showRangeAndDistance)
         {
+            //Gizmos.DrawSphere(flyingKickHitLocation.position, flyingKickHitRange);
+            
             Gizmos.DrawWireSphere(transform.position, followDistance);
             Gizmos.DrawWireCube(transform.position, new Vector3(detectionRange, 3f, 0f));
+            
         }
         
         //Physics2D.OverlapBoxAll(transform.position, new Vector2(maxRange, 5), 0f, enemyLayers);
