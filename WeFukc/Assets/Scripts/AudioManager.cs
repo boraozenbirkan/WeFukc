@@ -11,8 +11,7 @@ public class AudioManager : MonoBehaviour
     public Sound[] attackSFX;
     public Sound[] otherSounds;
 
-    private bool isPlayingMusic;
-    public bool isBbackgroundMusicOn = true;
+    private bool isBbackgroundMusicOn = true;
     private Sound currentPlayingMusic;
     private float delayBetweenMusics = 5f;
 
@@ -67,7 +66,7 @@ public class AudioManager : MonoBehaviour
     private void Update()
     {
         // If music plays, wait until it ends.
-        if (isPlayingMusic && isBbackgroundMusicOn)
+        if (isBbackgroundMusicOn)
         {
             if (!currentPlayingMusic.source.isPlaying)  // After it ends, wait a bit more and start new one
             {
@@ -119,13 +118,16 @@ public class AudioManager : MonoBehaviour
     // Start and Stop background musics
     public void SetBackgroundMusic(bool startPlaying)
     {
-        if (startPlaying && currentPlayingMusic == null)  // Start BG Music
+        if (startPlaying)  // Start BG Music
         {
-            // Play random bg music
+            // If there is already a bg music, then start a new one
+            if (currentPlayingMusic != null) { StartNewBackgroundMusic(); return; }
+
+            // If there is no bg music, then play random bg music
             Sound music = backgrounMusics[UnityEngine.Random.Range(0, backgrounMusics.Length)];
             music.source.Play();
 
-            isPlayingMusic = true;
+            isBbackgroundMusicOn = startPlaying;
 
             // Save it to previous bg music
             currentPlayingMusic = music;
@@ -135,8 +137,14 @@ public class AudioManager : MonoBehaviour
             // Stop the bg music
             currentPlayingMusic.source.Stop();
             currentPlayingMusic = null;
+            
+            isBbackgroundMusicOn = startPlaying;
         }
-        else Debug.Log("There is no music to stop");
+        else  // If there is no bg music to stop
+        {
+            Debug.Log("There is no music to stop");
+            isBbackgroundMusicOn = startPlaying;
+        }
     }
 
     private void StartNewBackgroundMusic()
@@ -156,6 +164,8 @@ public class AudioManager : MonoBehaviour
 
         // Save it
         currentPlayingMusic = music;
+
+        isBbackgroundMusicOn = true;
     }
 
     // Play random attack sound

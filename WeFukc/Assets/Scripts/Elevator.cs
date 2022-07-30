@@ -9,8 +9,10 @@ public class Elevator : MonoBehaviour
     [SerializeField] private Image endScreen;
     [SerializeField] private TextMeshProUGUI endScreenText;
     [SerializeField] private TextMeshProUGUI keyWarningText;
+    [SerializeField] private float currentLevel;
     private bool turnOnEndScreen = false;
     private float opacity = 0f;
+    AudioManager audioManager;
 
     private void Update()
     {
@@ -18,7 +20,7 @@ public class Elevator : MonoBehaviour
             if (opacity < 254f) { 
                 opacity += Time.deltaTime / 5f;
                 endScreen.color = new Color(0f, 0f, 0f, opacity);
-                endScreenText.color = new Color(255f, 255f, 255f, opacity); 
+                //endScreenText.color = new Color(255f, 255f, 255f, opacity); 
             }
         }
     }
@@ -41,11 +43,20 @@ public class Elevator : MonoBehaviour
         GetComponent<Rigidbody2D>().gravityScale = 0.2f;
 
         // Stop background music and play elevator music
-        AudioManager audioManager = FindObjectOfType<AudioManager>();
+        audioManager = FindObjectOfType<AudioManager>();
         audioManager.SetBackgroundMusic(false);
-        audioManager.isBbackgroundMusicOn = false;
         audioManager.PlaySFX("Elevator");
 
+        PlayerPrefs.SetFloat("completedLevel", currentLevel);
         turnOnEndScreen = true;
+        StartCoroutine(loadFukcingScene());
+    }
+
+    IEnumerator loadFukcingScene()
+    {
+        yield return new WaitForSeconds(5f);
+
+        audioManager.StopSFX("Elevator");
+        FindObjectOfType<LevelLoader>().LoadLevel("Fukcing_Scene");
     }
 }

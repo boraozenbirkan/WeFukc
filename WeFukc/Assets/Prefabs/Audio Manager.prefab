@@ -173,4 +173,10 @@ MonoBehaviour:
     volume: 1
     pitch: 1
     source: {fileID: 0}
-  isBbackgroundMusicOn: 1
+  - name: Heavenly
+    clip: {fileID: 8300000, guid: 94dd49c72323ab04fadc2af1a6f9c534, type: 3}
+    loop: 0
+    playOnAwake: 0
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
