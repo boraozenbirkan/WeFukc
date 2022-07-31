@@ -300,7 +300,7 @@ public class LevelGenerator : MonoBehaviour
             if (!isKeyAssigned)
             {
                 // Assign the key by 10%
-                if (1f < Random.Range(0f, 10f)){
+                if (2f > Random.Range(0f, 10f)){
                     newBot.isKeyAssigned = true;
                     isKeyAssigned = true;
                 }
