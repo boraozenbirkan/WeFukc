@@ -245,7 +245,7 @@ public class Snare : MonoBehaviour
             if (turningBlade_Range > 0f && xPos < turningBlade_Range)
             {
                 // Rise if needed
-                if (yPos < -0.2 && !upComplete)
+                if (yPos < -1.7f && !upComplete)
                 {
                     transform.Translate(Vector2.up * turningBlade_MoveSpeed * Time.deltaTime);
                 }
@@ -256,7 +256,7 @@ public class Snare : MonoBehaviour
                 transform.Translate(Vector2.right * turningBlade_MoveSpeed * Time.deltaTime);
 
                 // Start to go below when we come closer to the destination
-                if ((turningBlade_Range - xPos) < 3f && yPos > -2f)
+                if ((turningBlade_Range - xPos) < 3f && yPos > -1.7f)
                 {
                     transform.Translate(Vector2.down * turningBlade_MoveSpeed * Time.deltaTime);
                 }
@@ -266,7 +266,7 @@ public class Snare : MonoBehaviour
             else if (turningBlade_Range < 0f && xPos > turningBlade_Range)
             {
                 // Rise if needed
-                if (yPos < -0.2 && !upComplete)
+                if (yPos < -1.7f && !upComplete)
                 {
                     transform.Translate(Vector2.up * turningBlade_MoveSpeed * Time.deltaTime);
                 }
@@ -277,7 +277,7 @@ public class Snare : MonoBehaviour
                 transform.Translate(Vector2.left * turningBlade_MoveSpeed * Time.deltaTime);
 
                 // Start to go below when we come closer to the destination
-                if ((turningBlade_Range - xPos) < 3f && yPos > -2f)
+                if ((turningBlade_Range - xPos) < 3f && yPos > -1.7f)
                 {
                     transform.Translate(Vector2.down * turningBlade_MoveSpeed * Time.deltaTime);
                 }
@@ -294,13 +294,13 @@ public class Snare : MonoBehaviour
         // If we are not moving, reached to the destination then go below the surface
         else
         {
-            if (yPos > -2)
+            if (yPos > -1.7f)
             {
                 transform.Translate(Vector2.down * turningBlade_MoveSpeed * Time.deltaTime);
             }
 
             upComplete = false;     // Reset the upComplete to go up next time
-            transform.localPosition = new Vector2(0, -2f);
+            transform.localPosition = new Vector2(0, -1.7f);
             isPerforming = false;
         }
     }

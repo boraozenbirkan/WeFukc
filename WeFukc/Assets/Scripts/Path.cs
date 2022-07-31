@@ -7,11 +7,12 @@ public class Path
 {
     public string pathName;
     public int pathDifficulty;
+    public bool assignKey;
 
 
+    public GameObject BottomSpots;
     public GameObject TurningBladeSpots;
     public GameObject ChainBladeSpots;
-    public GameObject BottomSpots;
     public GameObject StoneSpots;
     //public GameObject BladeSpots;
     public GameObject BotSpots;

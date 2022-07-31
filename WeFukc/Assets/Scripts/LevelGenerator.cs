@@ -90,7 +90,7 @@ public class LevelGenerator : MonoBehaviour
         AssignDifficulties();
 
         // DEBUG: Set the path difficulties automatically
-        paths[2].pathDifficulty = 1; paths[3].pathDifficulty = 2; paths[4].pathDifficulty = 3;
+        //paths[2].pathDifficulty = 1; paths[3].pathDifficulty = 2; paths[4].pathDifficulty = 3;
 
         // Check if there are paths other than the default path to assign the key
         CheckOtherPaths();
@@ -233,10 +233,25 @@ public class LevelGenerator : MonoBehaviour
 
         StickBot newBot = null;
 
+        // If the path doesn't need a key to assign, then skip it by marking it already assigned
+        if (!_path.assignKey) isKeyAssigned = true;
+
+        int spotIndex = 1;
         foreach (Transform spot in spots)
         {
             // 10-20-30% of the spots will generate bots according to difficulty level (1-2-3)
-            if (_path.pathDifficulty < Random.Range(0, 10)) continue; // if random number bigger then difficulty level, then skip
+            // if random number bigger then difficulty level, then skip
+            // if we've reached the last spot in the spots, then spawn a bot definitely!
+            if (_path.pathDifficulty < Random.Range(0, 10) && spots.Length != spotIndex)
+            {
+                // Increase the index 
+                spotIndex++;
+
+                continue;
+            }
+
+            // Increase the index 
+            spotIndex++;
 
             if (spot.name.EndsWith("Spots")) continue; // if it get the spots' parent object, then skip it.
 
@@ -284,8 +299,8 @@ public class LevelGenerator : MonoBehaviour
 
             if (!isKeyAssigned)
             {
-                // Assign the key by 20%
-                if (2 < Random.Range(0f, 10f)){
+                // Assign the key by 10%
+                if (1f < Random.Range(0f, 10f)){
                     newBot.isKeyAssigned = true;
                     isKeyAssigned = true;
                 }
