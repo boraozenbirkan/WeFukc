@@ -109,9 +109,6 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
-        sound.source.volume = sound.volume * (1f + UnityEngine.Random.Range(-sound.volume / 2f, sound.volume / 2f));
-        sound.source.pitch = sound.pitch * (1f + UnityEngine.Random.Range(-sound.pitch / 2f, sound.pitch / 2f));
-
         sound.source.Stop();
     }
 

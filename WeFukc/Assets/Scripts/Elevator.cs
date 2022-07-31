@@ -47,7 +47,14 @@ public class Elevator : MonoBehaviour
         audioManager.SetBackgroundMusic(false);
         audioManager.PlaySFX("Elevator");
 
+        // Save completed level information
         PlayerPrefs.SetFloat("completedLevel", currentLevel);
+
+        // unlock the next level - 1 unlocked, 0 locked
+        PlayerPrefs.SetInt("unlockedLevel_" + (currentLevel + 1f).ToString(), 1);
+
+        PlayerPrefs.Save(); // Save all
+
         turnOnEndScreen = true;
         StartCoroutine(loadFukcingScene());
     }

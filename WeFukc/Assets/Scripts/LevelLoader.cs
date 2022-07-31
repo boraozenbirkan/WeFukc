@@ -33,7 +33,6 @@ public class LevelLoader : MonoBehaviour
     };
 
     private float progress;
-    public string bossName; // Level loader will carry the name of the boss for now
 
     private void Awake()
     {

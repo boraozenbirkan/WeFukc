@@ -3398,6 +3398,18 @@ PrefabInstance:
       propertyPath: fukcingLevel
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4663883495041556701, guid: ff775a7c18fd6434c8790ba964ecc1bd, type: 3}
+      propertyPath: flevel_camera
+      value: 
+      objectReference: {fileID: 997240802}
+    - target: {fileID: 4663883495041556701, guid: ff775a7c18fd6434c8790ba964ecc1bd, type: 3}
+      propertyPath: flevel_bossName
+      value: 
+      objectReference: {fileID: 1715945488}
+    - target: {fileID: 4663883495041556701, guid: ff775a7c18fd6434c8790ba964ecc1bd, type: 3}
+      propertyPath: flevel_playerName
+      value: 
+      objectReference: {fileID: 115927181}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff775a7c18fd6434c8790ba964ecc1bd, type: 3}
 --- !u!1001 &7043689633551339229

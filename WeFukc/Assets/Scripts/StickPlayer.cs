@@ -663,6 +663,7 @@ public class StickPlayer : MonoBehaviour
         yield return new WaitForSeconds(10f);
 
         Destroy(gameObject);
+        FindObjectOfType<LevelLoader>().LoadLevel("MenuScene");
     }
 
     public void PickUpKey()

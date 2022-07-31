@@ -58,25 +58,25 @@ public class LevelGenerator : MonoBehaviour
 
 
     /* Levels and Bot Tiers
-     * 
-   2 *  1: 75% Tier 1 - 25% Tier 2
-   2 *  2: 50% Tier 1 - 50% Tier 2
-   3 *  3: 25% Tier 1 - 50% Tier 2 - 25% Tier 3
-   3 *  4: 50% Tier 2 - 50% Tier 3
-   4 *  5: 25% Tier 2 - 50% Tier 3 - 25% Tier 4
-   4 *  6: 50% Tier 3 - 50% Tier 4
-   5 *  7: 25% Tier 3 - 50% Tier 4 - 25% Tier 5
-   5 *  8: 50% Tier 4 - 50% Tier 5
-   6 *  9: 25% Tier 4 - 50% Tier 5 - 25% Tier 6
-   6 *  10: 50% Tier 5 - 50% Tier 6
-   7 *  11: 25% Tier 5 - 50% Tier 6 - 25% Tier 7
-   8 *  12: 25% Tier 6 - 50% Tier 7 - 25% Tier 8
-   9 *  13: 25% Tier 7 - 50% Tier 8 - 25% Tier 9
-  10 *  14: 25% Tier 8 - 50% Tier 9 - 25% Tier 10
-  11 *  15: 25% Tier 9 - 50% Tier 10 - 25% Tier 11
-  12 *  16: 25% Tier 10 - 50% Tier 11 - 25% Tier 12
-  13 *  17: 25% Tier 11 - 50% Tier 12 - 25% Tier 13
-  14 *  18: 25% Tier 12 - 50% Tier 13 - 25% Tier 14
+     *                                                   50% - 50%
+   2 *  1: 75% Tier 1 - 25% Tier 2                      Tier 1 - 2
+   2 *  2: 50% Tier 1 - 50% Tier 2                      Tier 2 - 3
+   3 *  3: 25% Tier 1 - 50% Tier 2 - 25% Tier 3         Tier 3 - 4
+   3 *  4: 50% Tier 2 - 50% Tier 3                      Tier 4 - 5
+   4 *  5: 25% Tier 2 - 50% Tier 3 - 25% Tier 4         Tier 5 - 6
+   4 *  6: 50% Tier 3 - 50% Tier 4                      Tier 6 - 7
+   5 *  7: 25% Tier 3 - 50% Tier 4 - 25% Tier 5         Tier 7 - 8
+   5 *  8: 50% Tier 4 - 50% Tier 5                      Tier 8 - 9
+   6 *  9: 25% Tier 4 - 50% Tier 5 - 25% Tier 6         Tier 9 - 10
+   6 *  10: 50% Tier 5 - 50% Tier 6                     Tier 10 - 11
+   7 *  11: 25% Tier 5 - 50% Tier 6 - 25% Tier 7        Tier 11 - 12
+   8 *  12: 25% Tier 6 - 50% Tier 7 - 25% Tier 8        Tier 12 - 13
+   9 *  13: 25% Tier 7 - 50% Tier 8 - 25% Tier 9        Tier 13 - 14
+  10 *  14: 25% Tier 8 - 50% Tier 9 - 25% Tier 10       Tier 14 - 15
+  11 *  15: 25% Tier 9 - 50% Tier 10 - 25% Tier 11      Tier 15
+  12 *  16: 25% Tier 10 - 50% Tier 11 - 25% Tier 12     
+  13 *  17: 25% Tier 11 - 50% Tier 12 - 25% Tier 13     
+  14 *  18: 25% Tier 12 - 50% Tier 13 - 25% Tier 14     
   15 *  19: 25% Tier 13 - 50% Tier 14 - 25% Tier 15
   15 *  20: 50% Tier 14 - 50% Tier 15
      */
