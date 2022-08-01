@@ -6,9 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Stickman Test.unity
-    guid: c261ba5ebc2d9ac4a88ad954d7f8fa25
-  - enabled: 1
     path: Assets/Scenes/MenuScene.unity
     guid: 981fc87544b282b43a6951c7a075bff2
   - enabled: 1

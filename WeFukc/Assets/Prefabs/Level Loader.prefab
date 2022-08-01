@@ -249,7 +249,7 @@ GameObject:
   - component: {fileID: 2479900130220362091}
   - component: {fileID: 2479900130220362090}
   m_Layer: 5
-  m_Name: Skip Button
+  m_Name: Continue Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -270,10 +270,10 @@ RectTransform:
   m_Father: {fileID: 2479900131228651298}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
-  m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -197.76093, y: 67}
-  m_SizeDelta: {x: 377.041, y: 116.79}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 540.7391, y: -349}
+  m_SizeDelta: {x: 376.041, y: 116.79001}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2479900130220362100
 CanvasRenderer:
